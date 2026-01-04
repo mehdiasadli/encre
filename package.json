@@ -1,49 +1,59 @@
 {
-  "name": "encre",
-  "private": true,
-  "workspaces": {
-    "packages": [
-      "apps/*",
-      "packages/*"
-    ],
-    "catalog": {
-      "dotenv": "^17.2.2",
-      "zod": "^4.1.13",
-      "typescript": "^5",
-      "next": "^16.1.1",
-      "@prisma/client": "^7.1.0",
-      "@orpc/server": "^1.12.2",
-      "@orpc/client": "^1.12.2",
-      "@orpc/openapi": "^1.12.2",
-      "@orpc/zod": "^1.12.2",
-      "better-auth": "^1.4.9",
-      "@polar-sh/better-auth": "^1.1.3"
-    }
-  },
-  "type": "module",
-  "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "check-types": "turbo check-types",
-    "dev:native": "turbo -F native dev",
-    "dev:web": "turbo -F web dev",
-    "db:push": "turbo -F @encre/db db:push",
-    "db:studio": "turbo -F @encre/db db:studio",
-    "db:generate": "turbo -F @encre/db db:generate",
-    "db:migrate": "turbo -F @encre/db db:migrate",
-    "check": "biome check --write ."
-  },
-  "dependencies": {
-    "@encre/env": "workspace:*",
-    "dotenv": "catalog:",
-    "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^2.2.0",
-    "@encre/config": "workspace:*",
-    "@types/node": "^22.13.14",
-    "turbo": "^2.6.3",
-    "typescript": "catalog:"
-  },
-  "packageManager": "bun@1.3.4"
+	"name": "encre",
+	"private": true,
+	"workspaces": {
+		"packages": [
+			"apps/*",
+			"packages/*"
+		],
+		"catalog": {
+			"dotenv": "^17.2.2",
+			"zod": "^4.1.13",
+			"typescript": "^5",
+			"next": "^16.1.1",
+			"@prisma/client": "^7.1.0",
+			"@orpc/server": "^1.12.2",
+			"@orpc/client": "^1.12.2",
+			"@orpc/openapi": "^1.12.2",
+			"@orpc/zod": "^1.12.2",
+			"better-auth": "^1.4.9",
+			"@polar-sh/better-auth": "^1.1.3"
+		}
+	},
+	"type": "module",
+	"scripts": {
+		"dev": "turbo dev",
+		"build": "turbo build",
+		"check-types": "turbo check-types",
+		"dev:native": "turbo -F native dev",
+		"dev:www": "turbo -F www dev",
+		"db:push": "turbo -F @encre/db db:push",
+		"db:studio": "turbo -F @encre/db db:studio",
+		"db:generate": "turbo -F @encre/db db:generate",
+		"db:migrate": "turbo -F @encre/db db:migrate",
+		"check": "biome check --write .",
+		"prepare": "husky",
+		"create-package": "bun run scripts/create-package.ts",
+		"postcreate-package": "bun install"
+	},
+	"dependencies": {
+		"@encre/env": "workspace:*",
+		"dotenv": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.2.0",
+		"@encre/config": "workspace:*",
+		"@types/node": "^22.13.14",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.2.7",
+		"turbo": "^2.6.3",
+		"typescript": "catalog:"
+	},
+	"lint-staged": {
+		"*.{js,ts,jsx,tsx,json,css,md}": [
+			"biome check --write"
+		]
+	},
+	"packageManager": "bun@1.3.4"
 }

@@ -1,0 +1,24 @@
+import { z } from "zod";
+import { UserRoleSchema } from "../inputTypeSchemas/UserRoleSchema";
+
+/////////////////////////////////////////
+// USER SCHEMA
+/////////////////////////////////////////
+
+export const UserSchema = z.object({
+	role: UserRoleSchema,
+	id: z.uuid(),
+	createdAt: z.coerce.date(),
+	updatedAt: z.coerce.date(),
+	name: z.string().min(1, { message: "Name is required" }),
+	email: z.email({ message: "Invalid email address" }),
+	username: z
+		.string()
+		.min(4, { message: "Username must be at least 4 characters" }),
+	emailVerified: z.boolean(),
+	image: z.string().nullable(),
+});
+
+export type User = z.infer<typeof UserSchema>;
+
+export default UserSchema;

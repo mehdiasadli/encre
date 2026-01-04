@@ -1,9 +1,31 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated"
+  provider     = "prisma-client"
+  output       = "../generated"
   moduleFormat = "esm"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+generator zod {
+  provider = "zod-prisma-types"
+  output   = "../../../schemas/src/models"
+
+  createModelTypes                 = true
+  createInputTypes                 = false
+  createRelationValuesTypes        = false
+  createPartialTypes               = false
+  createOptionalDefaultValuesTypes = false
+  addInputTypeValidation           = false
+  addIncludeType                   = false
+  addSelectType                    = false
+
+  useMultipleFiles = true
+  writeBarrelFiles = true
+}
+
+enum SortOrder {
+  asc
+  desc
 }

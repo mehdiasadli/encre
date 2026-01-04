@@ -28,7 +28,7 @@ bun install
 This project uses PostgreSQL with Prisma.
 
 1. Make sure you have a PostgreSQL database set up.
-2. Update your `apps/web/.env` file with your PostgreSQL connection details.
+2. Update your `apps/www/.env` file with your PostgreSQL connection details.
 
 3. Apply the schema to your database:
 
@@ -49,7 +49,7 @@ Open [http://localhost:3001](http://localhost:3001) in your browser to see the f
 ```
 encre/
 ├── apps/
-│   └── web/         # Fullstack application (Next.js)
+│   └── www/         # Fullstack application (Next.js)
 ├── packages/
 │   ├── api/         # API layer / business logic
 │   ├── auth/        # Authentication configuration & logic

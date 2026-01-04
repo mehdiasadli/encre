@@ -1,26 +1,26 @@
 {
-  "name": "@encre/auth",
-  "type": "module",
-  "exports": {
-    ".": {
-      "default": "./src/index.ts"
-    },
-    "./*": {
-      "default": "./src/*.ts"
-    }
-  },
-  "scripts": {},
-  "dependencies": {
-    "@encre/db": "workspace:*",
-    "@encre/env": "workspace:*",
-    "@polar-sh/better-auth": "catalog:",
-    "@polar-sh/sdk": "^0.34.16",
-    "better-auth": "catalog:",
-    "dotenv": "catalog:",
-    "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@encre/config": "workspace:*",
-    "typescript": "catalog:"
-  }
+	"name": "@encre/auth",
+	"type": "module",
+	"exports": {
+		".": {
+			"default": "./src/index.ts"
+		},
+		"./*": {
+			"default": "./src/*.ts"
+		}
+	},
+	"scripts": {},
+	"dependencies": {
+		"@encre/db": "workspace:*",
+		"@encre/env": "workspace:*",
+		"@polar-sh/better-auth": "catalog:",
+		"@encre/polar": "workspace:*",
+		"better-auth": "catalog:",
+		"dotenv": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@encre/config": "workspace:*",
+		"typescript": "catalog:"
+	}
 }
