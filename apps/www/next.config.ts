@@ -1,4 +1,4 @@
-import "@encre/env/web";
+import "@encre/env/www";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {

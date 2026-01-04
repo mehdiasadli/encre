@@ -1,7 +1,5 @@
 import prisma from "@encre/db";
 import { env } from "@encre/env/server";
-import { polar } from "@encre/polar";
-import { checkout, polar as polarPlugin, portal } from "@polar-sh/better-auth";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
@@ -95,20 +93,6 @@ export const auth = betterAuth({
 		}),
 		multiSession({
 			maximumSessions: 3,
-		}),
-		polarPlugin({
-			client: polar,
-			createCustomerOnSignUp: true,
-			enableCustomerPortal: true,
-
-			use: [
-				checkout({
-					products: [],
-					successUrl: env.POLAR_SUCCESS_URL,
-					authenticatedUsersOnly: true,
-				}),
-				portal(),
-			],
 		}),
 	],
 });

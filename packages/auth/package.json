@@ -14,7 +14,6 @@
 		"@encre/db": "workspace:*",
 		"@encre/env": "workspace:*",
 		"@polar-sh/better-auth": "catalog:",
-		"@encre/polar": "workspace:*",
 		"better-auth": "catalog:",
 		"dotenv": "catalog:",
 		"zod": "catalog:"
