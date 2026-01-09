@@ -42,13 +42,13 @@ export function ChapterContent({ chapter }: ChapterContentProps) {
 					<p>•</p>
 					<p>
 						{data.editedAt
-							? "Edited on " + format(data.editedAt, "dd.MM.yyyy")
+							? `Edited on ${format(data.editedAt, "dd.MM.yyyy")}`
 							: "Never edited"}
 					</p>
 					<p>•</p>
 					<p>
 						{data.publishedAt
-							? "Published on " + format(data.publishedAt, "dd.MM.yyyy")
+							? `Published on ${format(data.publishedAt, "dd.MM.yyyy")}`
 							: "Never published"}
 					</p>
 					{data.publishedAt && (
@@ -56,8 +56,7 @@ export function ChapterContent({ chapter }: ChapterContentProps) {
 							<p>•</p>
 							<p>
 								{data.lastPublishedAt
-									? "Last published on " +
-										format(data.lastPublishedAt, "dd.MM.yyyy")
+									? `Last published on ${format(data.lastPublishedAt, "dd.MM.yyyy")}`
 									: "Never published"}
 							</p>
 						</>

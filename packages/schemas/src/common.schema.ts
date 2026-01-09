@@ -49,6 +49,7 @@ export const SortingSchema = <const T extends readonly string[]>(
 ) => {
 	return z.object({
 		dir: SortOrderSchema.default("asc"),
+		// biome-ignore lint/style/noNonNullAssertion: no default field
 		field: z.enum(fields).default(defaultField ?? fields[0]!),
 	});
 };
@@ -85,6 +86,7 @@ export type RangeFilterType = z.infer<typeof RangeFilterSchema>;
 export const CountSchema = <const T extends readonly string[]>(fields: T) =>
 	z.object(
 		fields.reduce(
+			// biome-ignore lint/performance/noAccumulatingSpread: reduce to object
 			(acc, field) => ({ ...acc, [field]: z.number().int().min(0) }),
 			{} as Record<T[number], z.ZodNumber>,
 		) as Record<T[number], z.ZodNumber>,
