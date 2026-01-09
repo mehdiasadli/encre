@@ -291,7 +291,12 @@ export function SerieBooklistLoading() {
 			<FramePanel>
 				<div className="space-y-2">
 					{Array.from({ length: 12 }).map((_, index) => (
-						<BookCardLoading key={`${index}-loading`} />
+						<BookCardLoading
+							key={`${
+								// biome-ignore lint/suspicious/noArrayIndexKey: array index key
+								index
+							}-loading`}
+						/>
 					))}
 				</div>
 			</FramePanel>

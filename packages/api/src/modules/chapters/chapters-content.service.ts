@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/complexity/noStaticOnlyClass: this is a service class */
 import prisma from "@encre/db";
 import type {
 	AuthorGetChapterContentInputType,

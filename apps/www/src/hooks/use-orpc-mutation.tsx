@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: ORPCError types */
 import { ORPCError } from "@orpc/client";
 import type {
 	DataTag,
@@ -9,7 +10,6 @@ import type {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-// biome-ignore lint/suspicious/noExplicitAny: ORPCError types
 type ORPCErrorType = ORPCError<any, any>;
 
 function toORPCError(error: unknown): ORPCErrorType {

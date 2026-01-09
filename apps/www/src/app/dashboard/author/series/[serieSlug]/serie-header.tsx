@@ -166,6 +166,7 @@ export function SerieHeaderLoading() {
 				{/* Dashboard Stats Grid Skeletons */}
 				<div className="grid max-w-2xl grid-cols-2 gap-4 sm:grid-cols-4">
 					{[...Array(4)].map((_, i) => (
+						// biome-ignore lint/suspicious/noArrayIndexKey: array index key
 						<div key={i} className="space-y-2 border bg-background p-3">
 							<Skeleton className="h-3 w-12 rounded-none" /> {/* Label */}
 							<Skeleton className="h-7 w-16 rounded-none" /> {/* Value */}

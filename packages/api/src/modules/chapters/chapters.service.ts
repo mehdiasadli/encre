@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/complexity/noStaticOnlyClass: this is a service class */
 import prisma, { type Prisma } from "@encre/db";
 import { env } from "@encre/env/server";
 import type {
