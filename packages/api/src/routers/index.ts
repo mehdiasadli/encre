@@ -3,6 +3,7 @@ import type { RouterClient } from "@orpc/server";
 import { authorRouter } from "../modules/author/author.router";
 import { booksRouter } from "../modules/books/books.router";
 import { chaptersRouter } from "../modules/chapters/chapters.router";
+import { feedbackRouter } from "../modules/feedback/feedback.router";
 import { resourcesRouter } from "../modules/resources/resources.router";
 import { seriesRouter } from "../modules/series/series.router";
 import { protectedProcedure, publicProcedure } from "../procedures";
@@ -23,6 +24,7 @@ export const appRouter = {
 	books: booksRouter,
 	chapters: chaptersRouter,
 	resources: resourcesRouter,
+	feedback: feedbackRouter,
 };
 export type AppRouter = typeof appRouter;
 export type AppRouterClient = RouterClient<typeof appRouter>;
