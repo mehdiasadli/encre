@@ -71,7 +71,7 @@ export function AuthorGlobalSearchDialog() {
 
 		document.addEventListener("keydown", down);
 		return () => document.removeEventListener("keydown", down);
-	}, []);
+	}, [setOpen]);
 
 	return (
 		<CommandDialog open={open} onOpenChange={onOpenChange}>

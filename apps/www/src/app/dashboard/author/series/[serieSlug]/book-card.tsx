@@ -7,14 +7,10 @@ import {
 	BookMarked,
 	BookOpen,
 	CalendarDays,
-	Eye,
 	EyeIcon,
-	FileText,
 	GripVertical,
 	Heart,
-	MoreHorizontal,
 	Pencil,
-	Trash2,
 	Users,
 } from "lucide-react";
 import Link from "next/link";

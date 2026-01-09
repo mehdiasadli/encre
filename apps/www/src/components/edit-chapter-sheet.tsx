@@ -1,9 +1,6 @@
 "use client";
 
-import {
-	UpdateBookInputSchema,
-	UpdateChapterInputSchema,
-} from "@encre/schemas";
+import { UpdateChapterInputSchema } from "@encre/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";

@@ -11,7 +11,6 @@ import {
 	ChapterSchema,
 	ResourceStatusSchema,
 } from "../models";
-import { slugRegex } from "../regex";
 
 export const UniqueChapterSchema = ChapterSchema.pick({
 	slug: true,

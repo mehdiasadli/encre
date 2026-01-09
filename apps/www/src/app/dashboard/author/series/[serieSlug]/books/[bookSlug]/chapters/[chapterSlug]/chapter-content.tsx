@@ -3,7 +3,6 @@
 import type { AuthorGetChapterOutputType } from "@encre/schemas";
 import { format } from "date-fns";
 import { BookOpen } from "lucide-react";
-import { Crimson_Text } from "next/font/google";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ContentDisplay } from "@/components/content-display";
@@ -17,11 +16,6 @@ import {
 } from "@/components/ui/frame";
 import { useContent } from "@/hooks/use-content";
 import { orpc } from "@/utils/orpc";
-
-const crimsonText = Crimson_Text({
-	subsets: ["latin"],
-	weight: ["400", "700"],
-});
 
 interface ChapterContentProps {
 	chapter: AuthorGetChapterOutputType;

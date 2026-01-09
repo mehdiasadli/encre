@@ -1,12 +1,13 @@
 export class BetterFetchError extends Error {
-	status: number;
-	statusText: string;
-	error: any;
-
-	constructor(status: number, statusText: string, error: any) {
-		super(error.message ?? statusText);
+	constructor(
+		public status: number,
+		public statusText: string,
+		// biome-ignore lint/suspicious/noExplicitAny: error can be any value
+		public error: any,
+	) {
+		super(error instanceof Error ? error.message : statusText);
 		this.status = status;
 		this.statusText = statusText;
-		this.error = error;
+		this.error = error instanceof Error ? error : new Error(statusText);
 	}
 }

@@ -3,7 +3,7 @@
 import type { AuthorGetChapterOutputType } from "@encre/schemas";
 import { formatEnum } from "@encre/utils";
 import { format } from "date-fns";
-import { BookOpen, Edit3, PencilIcon, Plus, Trash } from "lucide-react";
+import { BookOpen, Edit3, Trash } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { DeleteResourceDialog } from "@/components/delete-resource-dialog";

@@ -18,7 +18,6 @@ import {
 } from "@dnd-kit/sortable";
 import type {
 	AuthorGetBookOutputType,
-	AuthorGetChapterOutputType,
 	AuthorGetChaptersListOutputType,
 } from "@encre/schemas";
 import { useQuery } from "@tanstack/react-query";
@@ -27,7 +26,6 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { BookDragOverlay } from "@/components/order-swapping/book-drag-overlay";
 import { ChapterDragOverlay } from "@/components/order-swapping/chapter-drag-overlay";
 import {
 	type PendingSwap,

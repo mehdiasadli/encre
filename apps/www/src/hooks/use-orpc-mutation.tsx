@@ -45,7 +45,7 @@ type MutationOptionsWithORPCError<TData, TVariables, TContext> = Omit<
 		TContext
 	>["mutationFn"];
 	showErrorToast?: boolean;
-	invalidateQueries?: // biome-ignore lint/suspicious/noExplicitAny: DataTag types
+	invalidateQueries?:
 		| DataTag<QueryKey, any, any>[]
 		| ((
 				data: TData,

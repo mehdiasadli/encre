@@ -42,7 +42,7 @@ export const parseAsSlug = createParser({
 export const parseAsPage = createParser({
 	parse: (value) => z.number().int().positive().parse(value),
 	serialize: (value) => {
-		if (isNaN(value)) return "1";
+		if (Number.isNaN(value)) return "1";
 		return String(value);
 	},
 });
@@ -50,7 +50,7 @@ export const parseAsPage = createParser({
 export const parseAsTake = createParser({
 	parse: (value) => z.number().int().positive().max(100).parse(value),
 	serialize: (value) => {
-		if (isNaN(value)) return "20";
+		if (Number.isNaN(value)) return "20";
 		return String(value);
 	},
 });
