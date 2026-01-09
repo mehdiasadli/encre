@@ -11,21 +11,23 @@ import {
 	UpdateSerieOutputSchema,
 } from "@encre/schemas";
 import { authorProcedure } from "../../procedures";
-import { SeriesService } from "./series.service";
+import { createSerie } from "./services/create-serie";
+import { deleteSerie } from "./services/delete-serie";
+import { authorGetSeriesList } from "./services/get-many-serie";
+import { authorGetSerie } from "./services/get-one-serie";
+import { updateSerie } from "./services/update-serie";
 
 export const seriesRouter = {
 	authorGetSeriesList: authorProcedure
 		.output(AuthorGetSeriesListOutputSchema)
 		.handler(
-			async ({ context }) =>
-				await SeriesService.authorGetSeriesList(context.author.id),
+			async ({ context }) => await authorGetSeriesList(context.author.id),
 		),
 	createSerie: authorProcedure
 		.input(CreateSerieInputSchema)
 		.output(CreateSerieOutputSchema)
 		.handler(
-			async ({ input, context }) =>
-				await SeriesService.createSerie(input, context.author.id),
+			async ({ input, context }) => await createSerie(input, context.author.id),
 		),
 	updateSerie: authorProcedure
 		.input(
@@ -35,21 +37,19 @@ export const seriesRouter = {
 		)
 		.output(UpdateSerieOutputSchema)
 		.handler(
-			async ({ input, context }) =>
-				await SeriesService.updateSerie(input, context.author.id),
+			async ({ input, context }) => await updateSerie(input, context.author.id),
 		),
 	deleteSerie: authorProcedure
 		.input(DeleteSerieInputSchema)
 		.output(DeleteSerieOutputSchema)
 		.handler(
-			async ({ input, context }) =>
-				await SeriesService.deleteSerie(input, context.author.id),
+			async ({ input, context }) => await deleteSerie(input, context.author.id),
 		),
 	authorGetSerie: authorProcedure
 		.input(GetSerieInputSchema)
 		.output(GetSerieOutputSchema)
 		.handler(
 			async ({ input, context }) =>
-				await SeriesService.authorGetSerie(input, context.author.id),
+				await authorGetSerie(input, context.author.id),
 		),
 };
