@@ -1,6 +1,9 @@
 "use client";
 
-import { UpdateBookInputSchema } from "@encre/schemas";
+import {
+	UpdateBookInputSchema,
+	UpdateChapterInputSchema,
+} from "@encre/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";
@@ -29,25 +32,29 @@ import {
 	SheetTrigger,
 } from "./ui/sheet";
 
-interface EditBookSheetProps {
+interface EditChapterSheetProps {
 	render?: React.ComponentProps<typeof SheetTrigger>["render"];
 	slug: string;
-	serieSlug: string;
+	bookSlug: string;
 }
 
-export function EditBookSheet({ render, slug, serieSlug }: EditBookSheetProps) {
-	const [isOpen, setIsOpen] = useQueryState("edit-book");
+export function EditChapterSheet({
+	render,
+	slug,
+	bookSlug,
+}: EditChapterSheetProps) {
+	const [isOpen, setIsOpen] = useQueryState("edit-chapter");
 	const router = useRouter();
 	const pathname = usePathname();
 
-	const { content, data: book } = useContent({
-		...orpc.books.authorGetBook.queryOptions({ input: { slug } }),
+	const { content, data: chapter } = useContent({
+		...orpc.chapters.authorGetChapter.queryOptions({ input: { slug } }),
 		enabled: isOpen === slug,
 	});
 
 	const form = useForm({
 		resolver: zodResolver(
-			UpdateBookInputSchema.omit({
+			UpdateChapterInputSchema.omit({
 				slug: true,
 				status: true,
 			}),
@@ -60,25 +67,25 @@ export function EditBookSheet({ render, slug, serieSlug }: EditBookSheetProps) {
 			keepDirtyValues: true,
 		},
 	});
-	const formInitialized = useInitializeForm(form, book);
+	const formInitialized = useInitializeForm(form, chapter);
 
-	const { mutate: updateBook, isPending: isSubmitting } = useORPCMutation({
-		...orpc.books.updateBook.mutationOptions(),
+	const { mutate: updateChapter, isPending: isSubmitting } = useORPCMutation({
+		...orpc.chapters.updateChapter.mutationOptions(),
 		invalidateQueries: [
-			orpc.books.authorGetBook.queryKey({ input: { slug } }),
-			orpc.books.authorGetBooksList.queryKey({
-				input: { series: [serieSlug] },
+			orpc.chapters.authorGetChapter.queryKey({ input: { slug } }),
+			orpc.chapters.authorGetChaptersList.queryKey({
+				input: { books: [bookSlug] },
 			}),
 		],
 	});
 
 	const onSubmit = form.handleSubmit((data) => {
 		if (!formInitialized) return;
-		updateBook(
+		updateChapter(
 			{ slug, ...data },
 			{
 				onSuccess(data) {
-					toast.success("Book updated successfully");
+					toast.success("Chapter updated successfully");
 
 					if (data.slug !== slug) {
 						const newPathname = pathname.replace(slug, data.slug);
@@ -100,8 +107,8 @@ export function EditBookSheet({ render, slug, serieSlug }: EditBookSheetProps) {
 			<SheetTrigger render={render} />
 			<SheetPopup render={<form onSubmit={onSubmit} />} showCloseButton={false}>
 				<SheetHeader>
-					<SheetTitle>Edit Book</SheetTitle>
-					<SheetDescription>Edit the book details.</SheetDescription>
+					<SheetTitle>Edit Chapter</SheetTitle>
+					<SheetDescription>Edit the chapter details.</SheetDescription>
 				</SheetHeader>
 				<SheetPanel>
 					{content(() => (
@@ -116,7 +123,7 @@ export function EditBookSheet({ render, slug, serieSlug }: EditBookSheetProps) {
 											disabled={!formInitialized}
 											id={field.name}
 											{...field}
-											placeholder="Enter the title of the book"
+											placeholder="Enter the title of the chapter"
 										/>
 									</InputGroup>
 								)}
@@ -133,7 +140,7 @@ export function EditBookSheet({ render, slug, serieSlug }: EditBookSheetProps) {
 											id={field.name}
 											{...field}
 											value={field.value ?? ""}
-											placeholder="Enter the description of the book"
+											placeholder="Enter the description of the chapter"
 										/>
 									</InputGroup>
 								)}
@@ -145,9 +152,9 @@ export function EditBookSheet({ render, slug, serieSlug }: EditBookSheetProps) {
 					<LoadingButton
 						type="submit"
 						isLoading={isSubmitting}
-						loadingText="Updating book..."
+						loadingText="Updating chapter..."
 					>
-						Update book
+						Update chapter
 					</LoadingButton>
 				</SheetFooter>
 			</SheetPopup>

@@ -10,6 +10,7 @@ export const ArticleScalarFieldEnumSchema = z.enum([
 	"description",
 	"image",
 	"content",
+	"serieId",
 	"bookId",
 	"chapterId",
 	"characterId",

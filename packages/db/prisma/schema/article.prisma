@@ -20,6 +20,9 @@ model Article {
   image       String? /// @zod.string.url({ message: "Invalid image URL" })
   content     String?
 
+  serieId String /// @zod.string.uuid({ message: "Invalid serie ID" })
+  serie   Serie  @relation(fields: [serieId], references: [id], onDelete: Cascade)
+
   bookId String? /// @zod.string.uuid({ message: "Invalid book ID" })
   book   Book?   @relation(fields: [bookId], references: [id], onDelete: Cascade)
 

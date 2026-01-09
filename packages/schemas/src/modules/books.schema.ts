@@ -5,6 +5,7 @@ import {
 	PaginationOutputSchema,
 	RangeFilterSchema,
 	SearchSchema,
+	SlugSchema,
 	SortingSchema,
 } from "../common.schema";
 import {
@@ -15,7 +16,6 @@ import {
 	ResourceStatusSchema,
 	SerieSchema,
 } from "../models";
-import { slugRegex } from "../regex";
 
 export const UniqueBookSchema = BookSchema.pick({
 	slug: true,
@@ -24,10 +24,7 @@ export type UniqueBookType = z.infer<typeof UniqueBookSchema>;
 
 export const AuthorGetBooksListInputSchema = z
 	.object({
-		series: z
-			.string()
-			.regex(slugRegex, { message: "Invalid serie slug" })
-			.array(),
+		series: SlugSchema.array(),
 		statuses: ResourceStatusSchema.exclude(["deleted"]).array(),
 	})
 	.partial()
@@ -142,7 +139,10 @@ export const SwapBookOrderOutputSchema = z.object({
 });
 export type SwapBookOrderOutputType = z.infer<typeof SwapBookOrderOutputSchema>;
 
-export const DeleteBookInputSchema = UniqueBookSchema;
+export const DeleteBookInputSchema = BookSchema.pick({
+	slug: true,
+	title: true,
+});
 export type DeleteBookInputType = z.infer<typeof DeleteBookInputSchema>;
 
 export const DeleteBookOutputSchema = UniqueBookSchema;
@@ -165,6 +165,7 @@ export type AuthorGetBookInputType = z.infer<typeof AuthorGetBookInputSchema>;
 export const AuthorGetBookOutputSchema = BookSchema.omit({
 	id: true,
 	authorId: true,
+	serieId: true,
 	deletedAt: true,
 	deletionReason: true,
 }).extend({

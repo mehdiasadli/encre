@@ -51,7 +51,11 @@ export default function ServerErrorComponent({
 	}, [onRetry, retry]);
 
 	return (
-		<Alert className={cn("mx-auto max-w-md", props.className)} {...props}>
+		<Alert
+			variant="error"
+			className={cn("mx-auto max-w-md", props.className)}
+			{...props}
+		>
 			{icon}
 			<AlertTitle className={titleClassName}>{title}</AlertTitle>
 			<AlertDescription className={descriptionClassName}>
@@ -62,6 +66,7 @@ export default function ServerErrorComponent({
 					<LoadingButton
 						isLoading={isRetrying}
 						onClick={handleRetry}
+						variant="outline"
 						{...actionProps}
 						className={actionClassName}
 					>

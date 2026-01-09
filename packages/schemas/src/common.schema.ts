@@ -1,6 +1,5 @@
 import z from "zod";
 import { SortOrderSchema } from "./models";
-import type { SortOrderType } from "./models/inputTypeSchemas/SortOrderSchema";
 import { slugRegex } from "./regex";
 
 ////
@@ -60,7 +59,7 @@ export const SortingSchema = <const T extends readonly string[]>(
 
 export const SearchSchema = z.object({
 	query: z.string().optional(),
-	mode: z.enum(["default", "insensitive"]).optional(),
+	mode: z.enum(["default", "insensitive"]).default("insensitive"),
 });
 
 export type SearchType = z.infer<typeof SearchSchema>;

@@ -22,6 +22,7 @@ export const ArticleSchema = z.object({
 		.nullish(),
 	image: z.url({ message: "Invalid image URL" }).nullish(),
 	content: z.string().nullish(),
+	serieId: z.uuid({ message: "Invalid serie ID" }),
 	bookId: z.uuid({ message: "Invalid book ID" }).nullish(),
 	chapterId: z.uuid({ message: "Invalid chapter ID" }).nullish(),
 	characterId: z.uuid({ message: "Invalid character ID" }).nullish(),

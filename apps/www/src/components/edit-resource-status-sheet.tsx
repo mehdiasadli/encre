@@ -4,6 +4,7 @@ import { ResourceStatusSchema } from "@encre/schemas";
 import type { ResourceStatusType } from "@encre/schemas/models/inputTypeSchemas/ResourceStatusSchema";
 import { formatEnum, formatEnumForOptions } from "@encre/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useParams } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -62,6 +63,10 @@ export function EditResourceStatusSheet({
 	slug,
 	type,
 }: EditResourceStatusSheetProps) {
+	const { serieSlug, bookSlug } = useParams() as {
+		serieSlug?: string;
+		bookSlug?: string;
+	};
 	const [isOpen, setIsOpen] = useQueryState(`edit-${type}-status`);
 	const [isAcceptDialogOpen, setIsAcceptDialogOpen] = useQueryState(
 		`accept-${type}-status`,
@@ -81,6 +86,37 @@ export function EditResourceStatusSheet({
 			},
 		},
 	);
+
+	const { mutate: updateBook, isPending: isBookSubmitting } = useORPCMutation({
+		...orpc.books.updateBook.mutationOptions(),
+		invalidateQueries: [
+			orpc.books.authorGetBook.queryKey({ input: { slug } }),
+			orpc.books.authorGetBooksList.queryKey({
+				input: { series: serieSlug ? [serieSlug] : undefined },
+			}),
+		],
+		onSuccess() {
+			toast.success("Status updated successfully");
+			onOpenChange(false);
+			setIsAcceptDialogOpen(null);
+		},
+	});
+
+	const { mutate: updateChapter, isPending: isChapterSubmitting } =
+		useORPCMutation({
+			...orpc.chapters.updateChapter.mutationOptions(),
+			invalidateQueries: [
+				orpc.chapters.authorGetChapter.queryKey({ input: { slug } }),
+				orpc.chapters.authorGetChaptersList.queryKey({
+					input: { books: bookSlug ? [bookSlug] : undefined },
+				}),
+			],
+			onSuccess() {
+				toast.success("Status updated successfully");
+				onOpenChange(false);
+				setIsAcceptDialogOpen(null);
+			},
+		});
 
 	const form = useForm({
 		defaultValues: {
@@ -115,10 +151,10 @@ export function EditResourceStatusSheet({
 				updateSerie({ slug, status: data.status });
 				break;
 			case "book":
-				toast.warning("Not implemented yet");
+				updateBook({ slug, status: data.status });
 				break;
 			case "chapter":
-				toast.warning("Not implemented yet");
+				updateChapter({ slug, status: data.status });
 				break;
 			default:
 				toast.error("Invalid resource type");
@@ -136,7 +172,7 @@ export function EditResourceStatusSheet({
 
 	return (
 		<Sheet open={isOpen === slug} onOpenChange={onOpenChange}>
-			{render && <SheetTrigger render={render} />}
+			{render && <SheetTrigger nativeButton={false} render={render} />}
 			<SheetPopup render={<form onSubmit={onSubmit} />} showCloseButton={false}>
 				<SheetHeader>
 					<SheetTitle>Edit Status</SheetTitle>
@@ -230,7 +266,9 @@ export function EditResourceStatusSheet({
 							<DialogFooter>
 								<LoadingButton
 									disabled={!form.formState.isValid}
-									isLoading={isSerieSubmitting}
+									isLoading={
+										isSerieSubmitting || isBookSubmitting || isChapterSubmitting
+									}
 									loadingText="Updating..."
 									onClick={onSubmit}
 								>

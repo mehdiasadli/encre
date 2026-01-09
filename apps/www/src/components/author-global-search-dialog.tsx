@@ -1,13 +1,16 @@
 "use client";
 
-import type { AuthorSearchResourceOutputType } from "@encre/schemas";
+import {
+	type AuthorSearchResourceOutputType,
+	SearchableResourceSchema,
+} from "@encre/schemas";
 import { formatEnum } from "@encre/utils";
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useQuery } from "@tanstack/react-query";
 import { SearchIcon } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
-import { parseAsBoolean, useQueryState } from "nuqs";
+import { parseAsBoolean, parseAsStringLiteral, useQueryState } from "nuqs";
 import { useEffect } from "react";
 import {
 	Command,
@@ -15,22 +18,24 @@ import {
 	CommandDialogPopup,
 	CommandDialogTrigger,
 	CommandEmpty,
-	CommandGroup,
-	CommandGroupLabel,
 	CommandInput,
 	CommandItem,
 	CommandList,
-	CommandSeparator,
 } from "@/components/ui/command";
 import { orpc } from "@/utils/orpc";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Kbd } from "./ui/kbd";
+import { Tabs, TabsList, TabsTab } from "./ui/tabs";
 
 export function AuthorGlobalSearchDialog() {
 	const [open, setOpen] = useQueryState(
 		"global-search",
 		parseAsBoolean.withDefault(false),
+	);
+	const [selectedType, setSelectedType] = useQueryState(
+		"global-search-type",
+		parseAsStringLiteral(SearchableResourceSchema.options).withDefault("serie"),
 	);
 	const [search, setSearch] = useQueryState("global-search-query");
 	const [debouncedSearch] = useDebouncedValue(search, {
@@ -43,7 +48,7 @@ export function AuthorGlobalSearchDialog() {
 			enabled: open,
 			input: {
 				query: debouncedSearch || "",
-				type: "serie",
+				type: selectedType,
 			},
 		}),
 	});
@@ -80,6 +85,21 @@ export function AuthorGlobalSearchDialog() {
 						onChange={(e) => setSearch(e.target.value)}
 						placeholder="Search for series, books, chapters, characters, places, articles..."
 					/>
+					<Tabs
+						className="mx-auto px-4 py-2"
+						value={selectedType}
+						onValueChange={(value) =>
+							setSelectedType(value as AuthorSearchResourceOutputType["type"])
+						}
+					>
+						<TabsList variant="underline">
+							{SearchableResourceSchema.options.map((option) => (
+								<TabsTab key={option} value={option}>
+									{formatEnum(option, { capitalization: "upper" })}
+								</TabsTab>
+							))}
+						</TabsList>
+					</Tabs>
 					{search && (
 						<CommandEmpty>
 							{isLoading
@@ -91,10 +111,9 @@ export function AuthorGlobalSearchDialog() {
 										: null}
 						</CommandEmpty>
 					)}
-
 					<CommandList>
 						{(item: AuthorSearchResourceOutputType["items"][number]) => (
-							<SearchItem key={item.slug} item={item} type={data?.type} />
+							<SearchItem key={item.slug} item={item} type={selectedType} />
 						)}
 					</CommandList>
 				</Command>
@@ -115,29 +134,18 @@ function SearchButton({ onClick }: { onClick: () => void }) {
 
 function SearchItem({
 	item,
-	type = "serie",
+	type,
 }: {
 	item: AuthorSearchResourceOutputType["items"][number];
-	type?: AuthorSearchResourceOutputType["type"];
+	type: AuthorSearchResourceOutputType["type"];
 }) {
-	const { description, title, slug } = item;
-
-	const buildUrl = () => {
-		switch (type) {
-			case "serie":
-				return `/dashboard/author/series/${slug}` as string;
-			default:
-				throw new Error("Invalid type");
-		}
-	};
-
 	return (
-		<CommandItem key={item.slug} render={<Link href={buildUrl() as Route} />}>
+		<CommandItem key={item.slug} render={<Link href={item.url as Route} />}>
 			<div className="flex w-full items-center justify-between gap-2">
 				<div className="flex flex-col gap-y-1">
 					<h3 className="font-medium text-sm leading-none">{item.title}</h3>
 					<p className="line-clamp-2 truncate text-muted-foreground text-xs">
-						{description ?? "No description"}
+						{item.description || "No description"}
 					</p>
 				</div>
 				<Badge variant="outline">

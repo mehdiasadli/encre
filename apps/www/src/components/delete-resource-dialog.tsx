@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -44,6 +44,11 @@ export function DeleteResourceDialog({
 	description,
 }: DeleteResourceDialogProps) {
 	const router = useRouter();
+
+	const { serieSlug, bookSlug } = useParams() as {
+		serieSlug?: string;
+		bookSlug?: string;
+	};
 	const [isAcceptDialogOpen, setIsAcceptDialogOpen] = useQueryState(
 		`${type}-delete`,
 	);
@@ -60,10 +65,55 @@ export function DeleteResourceDialog({
 		},
 	);
 
+	const { mutate: deleteBook, isPending: isBookSubmitting } = useORPCMutation({
+		...orpc.books.deleteBook.mutationOptions(),
+		invalidateQueries: [
+			orpc.books.authorGetBooksList.queryKey({
+				input: { series: serieSlug ? [serieSlug] : undefined },
+			}),
+		],
+		onSuccess() {
+			toast.success("Resource deleted successfully");
+			if (serieSlug) {
+				router.push(`/dashboard/author/series/${serieSlug}`);
+			} else {
+				router.push("/dashboard/author");
+			}
+		},
+	});
+
+	const { mutate: deleteChapter, isPending: isChapterSubmitting } =
+		useORPCMutation({
+			...orpc.chapters.deleteChapter.mutationOptions(),
+			invalidateQueries: [
+				orpc.chapters.authorGetChaptersList.queryKey({
+					input: { books: bookSlug ? [bookSlug] : undefined },
+				}),
+			],
+			onSuccess() {
+				toast.success("Resource deleted successfully");
+				if (serieSlug && bookSlug) {
+					router.push(
+						`/dashboard/author/series/${serieSlug}/books/${bookSlug}`,
+					);
+				} else if (serieSlug) {
+					router.push(`/dashboard/author/series/${serieSlug}`);
+				} else {
+					router.push("/dashboard/author");
+				}
+			},
+		});
+
 	const onSubmit = () => {
 		switch (type) {
 			case "serie":
 				deleteSerie({ slug, title: titleValue });
+				break;
+			case "chapter":
+				deleteChapter({ slug, title: titleValue });
+				break;
+			case "book":
+				deleteBook({ slug, title: titleValue });
 				break;
 			default:
 				toast.error("Invalid resource type");
@@ -125,7 +175,9 @@ export function DeleteResourceDialog({
 				<DialogFooter>
 					<LoadingButton
 						disabled={titleValue !== title}
-						isLoading={isSerieSubmitting}
+						isLoading={
+							isSerieSubmitting || isBookSubmitting || isChapterSubmitting
+						}
 						loadingText="Deleting..."
 						onClick={onSubmit}
 						variant="destructive"

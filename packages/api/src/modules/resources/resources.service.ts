@@ -1,9 +1,7 @@
 import prisma from "@encre/db";
-import {
-	type AuthorSearchResourceInputType,
-	type AuthorSearchResourceOutputType,
-	SearchableResourceSchema,
-	type SearchableResourceType,
+import type {
+	AuthorSearchResourceInputType,
+	AuthorSearchResourceOutputType,
 } from "@encre/schemas";
 import { ORPCError } from "@orpc/client";
 
@@ -15,7 +13,7 @@ export class ResourcesService {
 		query: string,
 		authorId: string,
 	): Promise<AuthorSearchResourceOutputType["items"]> {
-		return prisma.serie.findMany({
+		const series = await prisma.serie.findMany({
 			where: {
 				authorId,
 				status: { not: "deleted" },
@@ -28,13 +26,18 @@ export class ResourcesService {
 			take: 5,
 			select: { slug: true, title: true, description: true },
 		});
+
+		return series.map((s) => ({
+			...s,
+			url: `/dashboard/author/series/${s.slug}`,
+		}));
 	}
 
 	private static async searchBooks(
 		query: string,
 		authorId: string,
 	): Promise<AuthorSearchResourceOutputType["items"]> {
-		return prisma.book.findMany({
+		const books = await prisma.book.findMany({
 			where: {
 				authorId,
 				status: { not: "deleted" },
@@ -45,15 +48,25 @@ export class ResourcesService {
 				],
 			},
 			take: 5,
-			select: { slug: true, title: true, description: true },
+			select: {
+				slug: true,
+				title: true,
+				description: true,
+				serie: { select: { slug: true } },
+			},
 		});
+
+		return books.map(({ serie, ...b }) => ({
+			...b,
+			url: `/dashboard/author/series/${serie.slug}/books/${b.slug}`,
+		}));
 	}
 
 	private static async searchChapters(
 		query: string,
 		authorId: string,
 	): Promise<AuthorSearchResourceOutputType["items"]> {
-		return prisma.chapter.findMany({
+		const chapters = await prisma.chapter.findMany({
 			where: {
 				authorId,
 				status: { not: "deleted" },
@@ -64,8 +77,18 @@ export class ResourcesService {
 				],
 			},
 			take: 5,
-			select: { slug: true, title: true, description: true },
+			select: {
+				slug: true,
+				title: true,
+				description: true,
+				book: { select: { slug: true, serie: { select: { slug: true } } } },
+			},
 		});
+
+		return chapters.map(({ book, ...c }) => ({
+			...c,
+			url: `/dashboard/author/series/${book.serie.slug}/books/${book.slug}/chapters/${c.slug}`,
+		}));
 	}
 
 	private static async searchCharacters(
@@ -91,14 +114,16 @@ export class ResourcesService {
 				firstName: true,
 				lastName: true,
 				description: true,
+				serie: { select: { slug: true } },
 			},
 		});
 
-		return characters.map((c) => ({
+		return characters.map(({ serie, ...c }) => ({
 			title:
 				c.firstName && c.lastName ? `${c.firstName} ${c.lastName}` : c.name,
 			slug: c.slug,
 			description: c.description,
+			url: `/dashboard/author/series/${serie.slug}/characters/${c.slug}`,
 		}));
 	}
 
@@ -117,13 +142,20 @@ export class ResourcesService {
 				],
 			},
 			take: 5,
-			select: { slug: true, name: true, address: true, description: true },
+			select: {
+				slug: true,
+				name: true,
+				address: true,
+				description: true,
+				serie: { select: { slug: true } },
+			},
 		});
 
-		return places.map((c) => ({
+		return places.map(({ serie, ...c }) => ({
 			title: c.name,
 			slug: c.slug,
 			description: c.address || c.description || "No description provided",
+			url: `/dashboard/author/series/${serie.slug}/places/${c.slug}`,
 		}));
 	}
 
@@ -131,7 +163,7 @@ export class ResourcesService {
 		query: string,
 		authorId: string,
 	): Promise<AuthorSearchResourceOutputType["items"]> {
-		return prisma.article.findMany({
+		const articles = await prisma.article.findMany({
 			where: {
 				AND: [
 					{
@@ -154,8 +186,18 @@ export class ResourcesService {
 				],
 			},
 			take: 5,
-			select: { slug: true, title: true, description: true },
+			select: {
+				slug: true,
+				title: true,
+				description: true,
+				serie: { select: { slug: true } },
+			},
 		});
+
+		return articles.map(({ serie, ...a }) => ({
+			...a,
+			url: `/dashboard/author/series/${serie.slug}/articles/${a.slug}`,
+		}));
 	}
 
 	////

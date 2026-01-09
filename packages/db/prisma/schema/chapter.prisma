@@ -1,10 +1,9 @@
 /// @zod.import(["import { slugRegex } from '../../regex';"])
 model Chapter {
-  id        String    @id @default(uuid())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  editedAt  DateTime?
-  slug      String    @unique /// @zod.string.regex(slugRegex, { message: "Invalid slug" })
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  slug      String   @unique /// @zod.string.regex(slugRegex, { message: "Invalid slug" })
 
   deletionReason DeletionResource?
   deletedAt      DateTime?
@@ -12,7 +11,12 @@ model Chapter {
   title       String /// @zod.string.min(2, { message: "Title must be at least 2 characters" }).max(50, { message: "Title cannot exceed 50 characters" })
   description String? /// @zod.string.max(1000, { message: "Description cannot exceed 1000 characters" })
   image       String? /// @zod.string.url({ message: "Invalid image URL" })
-  content     String
+
+  content         String /// public readable content
+  publishedAt     DateTime? // initial publication date
+  lastPublishedAt DateTime? // last publication date
+  editedAt        DateTime? // last edit date
+  draft           String? // draft content
 
   serieId String /// @zod.string.uuid({ message: "Invalid serie ID" })
   serie   Serie  @relation(fields: [serieId], references: [id], onDelete: Cascade)
@@ -27,7 +31,10 @@ model Chapter {
 
   /// @zod.number.int({ message: "Invalid order" }).min(1, { message: "Order must be at least 1" })
   order Int
+
+  // stats
   views Int @default(0)
+  words Int @default(0)
 
   articles     Article[]
   characters   ChapterCharacter[]

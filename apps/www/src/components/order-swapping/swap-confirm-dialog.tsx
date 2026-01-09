@@ -12,8 +12,8 @@ import {
 } from "../ui/dialog";
 
 export interface PendingSwap {
-	book1: { slug: string; title: string; order: number };
-	book2: { slug: string; title: string; order: number };
+	item1: { slug: string; title: string; order: number };
+	item2: { slug: string; title: string; order: number };
 }
 
 interface SwapConfirmDialogProps {
@@ -44,10 +44,10 @@ export function SwapConfirmDialog({
 						<div className="flex items-center gap-3 border bg-muted/50 p-4">
 							<div className="flex-1 text-center">
 								<div className="mb-1 text-muted-foreground text-xs">
-									Position {pendingSwap.book1.order}
+									Position {pendingSwap.item1.order}
 								</div>
 								<div className="truncate font-semibold">
-									{pendingSwap.book1.title}
+									{pendingSwap.item1.title}
 								</div>
 							</div>
 
@@ -57,10 +57,10 @@ export function SwapConfirmDialog({
 
 							<div className="flex-1 text-center">
 								<div className="mb-1 text-muted-foreground text-xs">
-									Position {pendingSwap.book2.order}
+									Position {pendingSwap.item2.order}
 								</div>
 								<div className="truncate font-semibold">
-									{pendingSwap.book2.title}
+									{pendingSwap.item2.title}
 								</div>
 							</div>
 						</div>

@@ -1,40 +1,30 @@
+"use client";
+
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { AuthorGetBooksListOutputType } from "@encre/schemas";
+import type { AuthorGetChaptersListOutputType } from "@encre/schemas";
 import { formatEnum } from "@encre/utils";
 import { format } from "date-fns";
 import {
-	BookMarked,
-	BookOpen,
 	CalendarDays,
-	Eye,
 	EyeIcon,
-	FileText,
 	GripVertical,
 	Heart,
-	MoreHorizontal,
-	Pencil,
-	Trash2,
 	Users,
 } from "lucide-react";
 import Link from "next/link";
-import { EditBookSheet } from "@/components/edit-book-sheet";
+import { useParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
-interface BookCardProps {
-	book: AuthorGetBooksListOutputType[number];
-	serieSlug: string;
+interface ChapterCardProps {
+	chapter: AuthorGetChaptersListOutputType[number];
 	isDragging?: boolean;
 }
 
-export function BookCard({
-	book,
-	serieSlug,
-	isDragging = false,
-}: BookCardProps) {
+export function ChapterCard({ chapter, isDragging = false }: ChapterCardProps) {
 	const {
 		attributes,
 		listeners,
@@ -42,7 +32,11 @@ export function BookCard({
 		transform,
 		transition,
 		isDragging: isSortableDragging,
-	} = useSortable({ id: book.slug });
+	} = useSortable({ id: chapter.slug });
+	const { serieSlug, bookSlug } = useParams() as {
+		serieSlug: string;
+		bookSlug: string;
+	};
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
@@ -72,7 +66,7 @@ export function BookCard({
 					<GripVertical className="h-5 w-5 text-muted-foreground/30 group-hover:text-muted-foreground/60" />
 				</button>
 				<div className="flex h-8 w-8 items-center justify-center border bg-muted font-bold font-mono text-xs">
-					{book.order}
+					{chapter.order}
 				</div>
 			</div>
 
@@ -82,12 +76,12 @@ export function BookCard({
 				<div className="space-y-1 md:col-span-4">
 					<div className="flex items-center gap-2">
 						<h3 className="truncate font-bold uppercase tracking-tight">
-							{book.title}
+							{chapter.title}
 						</h3>
-						<Badge variant="outline">{formatEnum(book.status)}</Badge>
+						<Badge variant="outline">{formatEnum(chapter.status)}</Badge>
 					</div>
 					<p className="truncate font-mono text-muted-foreground text-xs">
-						/{book.slug}
+						/{chapter.slug}
 					</p>
 				</div>
 
@@ -95,18 +89,11 @@ export function BookCard({
 				<div className="flex items-center gap-4 md:col-span-4">
 					<div
 						className="flex items-center gap-1.5 text-muted-foreground text-xs"
-						title="Chapters"
-					>
-						<BookOpen className="h-3.5 w-3.5" />
-						<span className="font-medium">{book._count.chapters}</span>
-					</div>
-					<div
-						className="flex items-center gap-1.5 text-muted-foreground text-xs"
 						title="Likes"
 					>
 						<Heart className="h-3.5 w-3.5" />
 						<span className="font-medium">
-							{book._count.likes.toLocaleString()}
+							{chapter._count.likes.toLocaleString()}
 						</span>
 					</div>
 					<div
@@ -115,16 +102,16 @@ export function BookCard({
 					>
 						<Users className="h-3.5 w-3.5" />
 						<span className="font-medium">
-							{book._count.reads.toLocaleString()}
+							{chapter._count.reads.toLocaleString()}
 						</span>
 					</div>
 					<div
 						className="flex items-center gap-1.5 text-muted-foreground text-xs"
 						title="Shelved"
 					>
-						<BookMarked className="h-3.5 w-3.5" />
+						<EyeIcon className="h-3.5 w-3.5" />
 						<span className="font-medium">
-							{book._count.shelves.toLocaleString()}
+							{chapter.views.toLocaleString()}
 						</span>
 					</div>
 				</div>
@@ -134,7 +121,7 @@ export function BookCard({
 					<div className="flex flex-col items-start gap-0.5 md:items-end">
 						<div className="flex items-center gap-1.5 text-muted-foreground text-xs">
 							<CalendarDays className="h-3 w-3" />
-							<span>{format(book.createdAt, "MMM d, yyyy")}</span>
+							<span>{format(chapter.createdAt, "MMM d, yyyy")}</span>
 						</div>
 						<span className="font-bold text-[10px] text-muted-foreground uppercase tracking-widest">
 							Created
@@ -143,7 +130,7 @@ export function BookCard({
 					<div className="flex flex-col items-start gap-0.5 md:items-end">
 						<div className="flex items-center gap-1.5 text-muted-foreground text-xs">
 							<CalendarDays className="h-3 w-3" />
-							<span>{format(book.updatedAt, "MMM d, yyyy")}</span>
+							<span>{format(chapter.updatedAt, "MMM d, yyyy")}</span>
 						</div>
 						<span className="font-bold text-[10px] text-muted-foreground uppercase tracking-widest">
 							Updated
@@ -154,7 +141,7 @@ export function BookCard({
 
 			{/* Action Buttons */}
 			<div className="ml-4 flex shrink-0 items-center gap-1">
-				<EditBookSheet
+				{/* <EditBookSheet
 					slug={book.slug}
 					serieSlug={serieSlug}
 					render={
@@ -166,7 +153,7 @@ export function BookCard({
 							<Pencil className="h-4 w-4" />
 						</Button>
 					}
-				/>
+				/> */}
 
 				<Button
 					variant="ghost"
@@ -174,7 +161,7 @@ export function BookCard({
 					className="rounded-none"
 					render={
 						<Link
-							href={`/dashboard/author/series/${serieSlug}/books/${book.slug}`}
+							href={`/dashboard/author/series/${serieSlug}/books/${bookSlug}/chapters/${chapter.slug}`}
 						/>
 					}
 				>
@@ -185,7 +172,7 @@ export function BookCard({
 	);
 }
 
-export function BookCardLoading() {
+export function ChapterCardLoading() {
 	return (
 		<div className="group relative flex items-center gap-4 rounded-none border bg-background p-4 transition-colors hover:bg-muted/50">
 			{/* Drag Handle & Order */}
@@ -212,7 +199,6 @@ export function BookCardLoading() {
 					<Skeleton className="h-4 w-12" />
 					<Skeleton className="h-4 w-12" />
 					<Skeleton className="h-4 w-12" />
-					<Skeleton className="h-4 w-12" />
 				</div>
 
 				{/* Dates Section */}
@@ -230,7 +216,6 @@ export function BookCardLoading() {
 
 			{/* Action Buttons */}
 			<div className="ml-4 flex shrink-0 items-center gap-1">
-				<Skeleton className="h-8 w-8" />
 				<Skeleton className="h-8 w-8" />
 			</div>
 		</div>

@@ -24,6 +24,7 @@ model Serie {
   attachements PostAttachement[]
   comments     Comment[]
   likes        Like[]
+  articles     Article[]
 
   @@map("serie")
 }

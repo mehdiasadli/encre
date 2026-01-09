@@ -31,6 +31,7 @@ export const AuthorSearchResourceOutputSchema = z.object({
 			title: z.string(),
 			slug: z.string(),
 			description: z.string().nullable(),
+			url: z.string(),
 		}),
 	),
 });

@@ -24,14 +24,6 @@ export class BooksService {
 	// HELPERS
 	////
 	static validateBookTitle(title: string) {
-		console.log({
-			title,
-			blocklist: resourceTitleBlocklist,
-			result: resourceTitleBlocklist.some((word) =>
-				title.toLowerCase().includes(word.toLowerCase()),
-			),
-		});
-
 		if (
 			resourceTitleBlocklist.some((word) =>
 				title.toLowerCase().includes(word.toLowerCase()),
@@ -56,6 +48,78 @@ export class BooksService {
 			throw new ORPCError("BAD_REQUEST", {
 				message: `You have reached the maximum number of books (${env.MAX_BOOKS_PER_SERIE} per serie). You cannot add more books.`,
 			});
+		}
+	}
+
+	static async handleTitleChange(
+		book: { id: string; title: string | undefined },
+		newTitle: string | undefined,
+	) {
+		if (!newTitle || book.title === newTitle) return undefined;
+
+		BooksService.validateBookTitle(newTitle);
+
+		const updatedSlug = await generateUniqueSlug(newTitle, async (slug) => {
+			const existingBook = await prisma.book.findUnique({
+				where: { slug },
+				select: { id: true, status: true, slug: true },
+			});
+
+			if (!existingBook) return null;
+			if (existingBook.status === "deleted") {
+				await prisma.book.update({
+					where: { id: existingBook.id },
+					data: {
+						slug: `${slug}-deleted-${Math.random().toString(36).slice(4, 8)}`,
+					},
+				});
+
+				return null;
+			}
+
+			return existingBook;
+		});
+
+		return updatedSlug;
+	}
+
+	static async handleStatusChange(
+		book: { id: string; status: ResourceStatusType },
+		newStatus: ResourceStatusType | undefined,
+	) {
+		if (!newStatus || book.status === newStatus) return undefined;
+
+		const statusMap: Record<
+			Exclude<ResourceStatusType, "deleted">,
+			Exclude<ResourceStatusType, "deleted">[]
+		> = {
+			draft: ["published", "coming_soon", "cancelled"],
+			archived: ["published"],
+			cancelled: ["archived"],
+			coming_soon: ["published", "cancelled"],
+			published: ["archived", "cancelled"],
+		};
+
+		if (!statusMap[newStatus as Exclude<ResourceStatusType, "deleted">]) {
+			throw new ORPCError("BAD_REQUEST", {
+				message: "Invalid status",
+			});
+		}
+
+		if (newStatus === "published") {
+			// check if book has chapters
+			const [publishedChapterCount] = await prisma.$transaction([
+				prisma.chapter.count({
+					where: { bookId: book.id, status: "published" },
+				}),
+			]);
+
+			if (publishedChapterCount === 0) {
+				throw new ORPCError("BAD_REQUEST", {
+					message:
+						"Book cannot be published because it has no published chapters. Please publish at least one chapter before publishing this book.",
+				});
+			}
 		}
 	}
 
@@ -121,6 +185,7 @@ export class BooksService {
 			},
 			omit: {
 				authorId: true,
+				serieId: true,
 				deletedAt: true,
 				deletionReason: true,
 				id: true,
@@ -198,13 +263,6 @@ export class BooksService {
 		});
 		const order = bookCount + 1;
 
-		if (order > 20) {
-			throw new ORPCError("BAD_REQUEST", {
-				message:
-					"You have reached the maximum number of books in a serie. You cannot add more books.",
-			});
-		}
-
 		return await prisma.book.create({
 			data: {
 				title: input.title,
@@ -234,9 +292,9 @@ export class BooksService {
 				slug,
 				authorId,
 				status: { not: "deleted" },
-				serie: { status: { not: "deleted" } },
 			},
 			select: {
+				id: true,
 				title: true,
 				authorId: true,
 				slug: true,
@@ -264,35 +322,8 @@ export class BooksService {
 			});
 		}
 
-		let updatedSlug: string | undefined;
-
-		if (title && title !== book.title) {
-			BooksService.validateBookTitle(title);
-
-			updatedSlug = await generateUniqueSlug(
-				title,
-				async (slug) => await prisma.book.findUnique({ where: { slug } }),
-			);
-		}
-
-		if (status && status !== book.status) {
-			const statusMap: Record<
-				Exclude<ResourceStatusType, "deleted">,
-				Exclude<ResourceStatusType, "deleted">[]
-			> = {
-				draft: ["published", "coming_soon", "cancelled"],
-				archived: ["published"],
-				cancelled: ["archived"],
-				coming_soon: ["published", "cancelled"],
-				published: ["archived", "cancelled"],
-			};
-
-			if (!statusMap[status as Exclude<ResourceStatusType, "deleted">]) {
-				throw new ORPCError("BAD_REQUEST", {
-					message: "Invalid status",
-				});
-			}
-		}
+		const updatedSlug = await BooksService.handleTitleChange(book, title);
+		await BooksService.handleStatusChange(book, status);
 
 		return await prisma.book.update({
 			where: { slug },
@@ -337,7 +368,7 @@ export class BooksService {
 		await prisma.$transaction(async (tx) => {
 			await tx.book.update({
 				where: { id: book1.id },
-				data: { order: -1 /** temporary order to avoid conflicts */ },
+				data: { order: -1000 /** temporary order to avoid conflicts */ },
 			});
 
 			await tx.book.update({
@@ -363,12 +394,18 @@ export class BooksService {
 	): Promise<DeleteBookOutputType> {
 		const book = await prisma.book.findUnique({
 			where: { slug: input.slug, authorId, status: { not: "deleted" } },
-			select: { id: true, slug: true },
+			select: { id: true, slug: true, title: true, serieId: true, order: true },
 		});
 
 		if (!book) {
 			throw new ORPCError("NOT_FOUND", {
 				message: "Book not found",
+			});
+		}
+
+		if (book.title !== input.title) {
+			throw new ORPCError("BAD_REQUEST", {
+				message: "Book title does not match",
 			});
 		}
 
@@ -379,15 +416,37 @@ export class BooksService {
 				deletedAt: new Date(),
 			} as const;
 
+			const currentOrder = book.order;
+
+			const lastDeletedBook = await tx.book.findFirst({
+				where: { serieId: book.serieId, status: "deleted" },
+				orderBy: { deletedAt: "desc" },
+			});
+
 			await tx.book.update({
 				where: { id: book.id, status: { not: "deleted" } },
-				data,
+				data: {
+					...data,
+					order: lastDeletedBook ? lastDeletedBook.order - 1 : -1,
+				},
 			});
 
 			// delete all the chapters
 			await tx.chapter.updateMany({
 				where: { bookId: book.id, status: { not: "deleted" } },
 				data,
+			});
+
+			// fix the order of the books
+			// books before deleted book remains the same
+			// books after deleted book decremented by 1
+			await tx.book.updateMany({
+				where: {
+					serieId: book.serieId,
+					status: { not: "deleted" },
+					order: { gt: currentOrder },
+				},
+				data: { order: { decrement: 1 } },
 			});
 		});
 

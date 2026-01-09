@@ -17,15 +17,18 @@ import {
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import type {
-	AuthorGetBooksListOutputType,
-	GetSerieOutputType,
+	AuthorGetBookOutputType,
+	AuthorGetChapterOutputType,
+	AuthorGetChaptersListOutputType,
 } from "@encre/schemas";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, BookIcon, PlusIcon, RefreshCcw } from "lucide-react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { BookDragOverlay } from "@/components/order-swapping/book-drag-overlay";
+import { ChapterDragOverlay } from "@/components/order-swapping/chapter-drag-overlay";
 import {
 	type PendingSwap,
 	SwapConfirmDialog,
@@ -53,42 +56,44 @@ import {
 	FrameTitle,
 } from "@/components/ui/frame";
 import { LoadingButton } from "@/components/ui/loading-button";
+import { Spinner } from "@/components/ui/spinner";
 import { useORPCMutation } from "@/hooks/use-orpc-mutation";
 import { orpc } from "@/utils/orpc";
-import { BookCard, BookCardLoading } from "./book-card";
+import { ChapterCard } from "./chapter-card";
 
-interface SerieBooklistProps {
-	serie: GetSerieOutputType;
+interface BookChapterlistProps {
+	book: AuthorGetBookOutputType;
 }
 
-export function SerieBooklist({ serie }: SerieBooklistProps) {
+export function BookChapterlist({ book }: BookChapterlistProps) {
+	const { serieSlug } = useParams() as { serieSlug: string };
+
 	const {
-		data: books,
+		data: chapters,
 		isLoading,
 		error,
 		refetch,
 		isRefetching,
 	} = useQuery({
-		...orpc.books.authorGetBooksList.queryOptions({
+		...orpc.chapters.authorGetChaptersList.queryOptions({
 			input: {
-				series: [serie.slug],
+				books: [book.slug],
 			},
 		}),
 	});
 
-	const [localBooks, setLocalBooks] = useState<AuthorGetBooksListOutputType>(
-		[],
-	);
-	const [activeBook, setActiveBook] = useState<
-		AuthorGetBooksListOutputType[number] | null
+	const [localChapters, setLocalChapters] =
+		useState<AuthorGetChaptersListOutputType>([]);
+	const [activeChapter, setActiveChapter] = useState<
+		AuthorGetChaptersListOutputType[number] | null
 	>(null);
 	const [pendingSwap, setPendingSwap] = useState<PendingSwap | null>(null);
 
 	useEffect(() => {
-		if (books) {
-			setLocalBooks(books);
+		if (chapters) {
+			setLocalChapters(chapters);
 		}
-	}, [books]);
+	}, [chapters]);
 
 	// DnD sensors
 	const sensors = useSensors(
@@ -103,17 +108,17 @@ export function SerieBooklist({ serie }: SerieBooklistProps) {
 	);
 
 	// Swap mutation
-	const { mutate: swapBooks, isPending: isSwapping } = useORPCMutation({
-		...orpc.books.swapBookOrder.mutationOptions(),
+	const { mutate: swapChapters, isPending: isSwapping } = useORPCMutation({
+		...orpc.chapters.swapChapterOrder.mutationOptions(),
 		onSuccess() {
-			toast.success("Books reordered successfully");
+			toast.success("Chapters reordered successfully");
 			setPendingSwap(null);
 			refetch();
 		},
 		onError() {
 			// Reset to original order on error
-			if (books) {
-				setLocalBooks(books);
+			if (chapters) {
+				setLocalChapters(chapters);
 			}
 			setPendingSwap(null);
 		},
@@ -121,67 +126,78 @@ export function SerieBooklist({ serie }: SerieBooklistProps) {
 
 	const handleDragStart = (event: DragStartEvent) => {
 		const { active } = event;
-		const book = localBooks.find((b) => b.slug === active.id);
-		setActiveBook(book || null);
+		const chapter = localChapters.find((c) => c.slug === active.id);
+		setActiveChapter(chapter || null);
 	};
 
 	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event;
 
-		setActiveBook(null);
+		setActiveChapter(null);
 
 		if (!over || active.id === over.id) {
 			return;
 		}
 
-		const book1 = localBooks.find((b) => b.slug === active.id);
-		const book2 = localBooks.find((b) => b.slug === over.id);
+		const chapter1 = localChapters.find((c) => c.slug === active.id);
+		const chapter2 = localChapters.find((c) => c.slug === over.id);
 
-		if (!book1 || !book2) {
+		if (!chapter1 || !chapter2) {
 			return;
 		}
 
 		// Optimistically update local state
-		setLocalBooks((prev) => {
-			const newBooks = [...prev];
-			const index1 = newBooks.findIndex((b) => b.slug === book1.slug);
-			const index2 = newBooks.findIndex((b) => b.slug === book2.slug);
+		setLocalChapters((prev) => {
+			const newChapters = [...prev];
+			const index1 = newChapters.findIndex((c) => c.slug === chapter1.slug);
+			const index2 = newChapters.findIndex((c) => c.slug === chapter2.slug);
 
 			// Swap orders
-			const temp = newBooks[index1].order;
-			newBooks[index1] = { ...newBooks[index1], order: newBooks[index2].order };
-			newBooks[index2] = { ...newBooks[index2], order: temp };
+			const temp = newChapters[index1].order;
+			newChapters[index1] = {
+				...newChapters[index1],
+				order: newChapters[index2].order,
+			};
+			newChapters[index2] = { ...newChapters[index2], order: temp };
 
 			// Sort by order
-			return newBooks.sort((a, b) => a.order - b.order);
+			return newChapters.sort((a, b) => a.order - b.order);
 		});
 
 		// Set pending swap for confirmation
 		setPendingSwap({
-			item1: { slug: book1.slug, title: book1.title, order: book1.order },
-			item2: { slug: book2.slug, title: book2.title, order: book2.order },
+			item1: {
+				slug: chapter1.slug,
+				title: chapter1.title,
+				order: chapter1.order,
+			},
+			item2: {
+				slug: chapter2.slug,
+				title: chapter2.title,
+				order: chapter2.order,
+			},
 		});
 	};
 
 	const handleConfirmSwap = () => {
 		if (!pendingSwap) return;
 
-		swapBooks({
-			book1: pendingSwap.item1.slug,
-			book2: pendingSwap.item2.slug,
+		swapChapters({
+			chapter1: pendingSwap.item1.slug,
+			chapter2: pendingSwap.item2.slug,
 		});
 	};
 
 	const handleCancelSwap = () => {
 		// Reset to original order
-		if (books) {
-			setLocalBooks(books);
+		if (chapters) {
+			setLocalChapters(chapters);
 		}
 		setPendingSwap(null);
 	};
 
 	if (isLoading) {
-		return <SerieBooklistLoading />;
+		return <Spinner />;
 	}
 
 	if (error) {
@@ -189,7 +205,7 @@ export function SerieBooklist({ serie }: SerieBooklistProps) {
 			<div>
 				<Alert variant="error">
 					<AlertTriangle />
-					<AlertTitle>Error Occured While Fetching the Serie</AlertTitle>
+					<AlertTitle>Error Occured While Fetching the Chapter</AlertTitle>
 					<AlertDescription>{error.message}</AlertDescription>
 					<AlertAction>
 						<LoadingButton
@@ -207,23 +223,23 @@ export function SerieBooklist({ serie }: SerieBooklistProps) {
 		);
 	}
 
-	if (!books || books.length === 0) {
+	if (!chapters || chapters.length === 0) {
 		return (
 			<Empty>
 				<EmptyHeader>
 					<EmptyMedia>
 						<BookIcon />
 					</EmptyMedia>
-					<EmptyTitle>No books found</EmptyTitle>
+					<EmptyTitle>No chapters found</EmptyTitle>
 					<EmptyDescription>
-						Add a new book to start your serie.
+						Add a new chapter to start your book.
 					</EmptyDescription>
 				</EmptyHeader>
 				<EmptyContent>
 					<Button
 						render={
 							<Link
-								href={`/dashboard/author/series/${serie.slug}/books/create`}
+								href={`/dashboard/author/series/${serieSlug}/books/${book.slug}/chapters/create`}
 							/>
 						}
 					>
@@ -239,8 +255,10 @@ export function SerieBooklist({ serie }: SerieBooklistProps) {
 		<>
 			<Frame>
 				<FrameHeader>
-					<FrameTitle>List of books</FrameTitle>
-					<FrameDescription>Manage your books in this serie.</FrameDescription>
+					<FrameTitle>List of chapters</FrameTitle>
+					<FrameDescription>
+						Manage your chapters in this book.
+					</FrameDescription>
 				</FrameHeader>
 				<FramePanel>
 					<DndContext
@@ -250,22 +268,18 @@ export function SerieBooklist({ serie }: SerieBooklistProps) {
 						onDragEnd={handleDragEnd}
 					>
 						<SortableContext
-							items={localBooks.map((b) => b.slug)}
+							items={localChapters.map((b) => b.slug)}
 							strategy={verticalListSortingStrategy}
 						>
 							<div className="space-y-2">
-								{localBooks.map((book) => (
-									<BookCard
-										key={book.slug}
-										book={book}
-										serieSlug={serie.slug}
-									/>
+								{localChapters.map((chapter) => (
+									<ChapterCard key={chapter.slug} chapter={chapter} />
 								))}
 							</div>
 						</SortableContext>
 
 						<DragOverlay>
-							{activeBook && <BookDragOverlay book={activeBook} />}
+							{activeChapter && <ChapterDragOverlay chapter={activeChapter} />}
 						</DragOverlay>
 					</DndContext>
 				</FramePanel>
@@ -278,23 +292,5 @@ export function SerieBooklist({ serie }: SerieBooklistProps) {
 				isLoading={isSwapping}
 			/>
 		</>
-	);
-}
-
-export function SerieBooklistLoading() {
-	return (
-		<Frame>
-			<FrameHeader>
-				<FrameTitle>List of books</FrameTitle>
-				<FrameDescription>Manage your books in this serie.</FrameDescription>
-			</FrameHeader>
-			<FramePanel>
-				<div className="space-y-2">
-					{Array.from({ length: 12 }).map((_, index) => (
-						<BookCardLoading key={`${index}-loading`} />
-					))}
-				</div>
-			</FramePanel>
-		</Frame>
 	);
 }

@@ -4,7 +4,6 @@ export const ChapterScalarFieldEnumSchema = z.enum([
 	"id",
 	"createdAt",
 	"updatedAt",
-	"editedAt",
 	"slug",
 	"deletionReason",
 	"deletedAt",
@@ -12,12 +11,17 @@ export const ChapterScalarFieldEnumSchema = z.enum([
 	"description",
 	"image",
 	"content",
+	"publishedAt",
+	"lastPublishedAt",
+	"editedAt",
+	"draft",
 	"serieId",
 	"bookId",
 	"authorId",
 	"status",
 	"order",
 	"views",
+	"words",
 ]);
 
 export default ChapterScalarFieldEnumSchema;
