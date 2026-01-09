@@ -1,5 +1,7 @@
 import {
 	AdminGetSerieOutputSchema,
+	AdminGetSeriesListInputSchema,
+	AdminGetSeriesListOutputSchema,
 	AuthorGetSerieOutputSchema,
 	AuthorGetSeriesListOutputSchema,
 	CreateSerieInputSchema,
@@ -20,7 +22,11 @@ import {
 } from "../../procedures";
 import { createSerie } from "./services/create-serie";
 import { deleteSerie } from "./services/delete-serie";
-import { authorGetSeriesList, getSeriesList } from "./services/get-many-serie";
+import {
+	adminGetSeriesList,
+	authorGetSeriesList,
+	getSeriesList,
+} from "./services/get-many-serie";
 import {
 	adminGetSerie,
 	authorGetSerie,
@@ -56,6 +62,10 @@ export const seriesRouter = {
 		.handler(
 			async ({ context }) => await authorGetSeriesList(context.author.id),
 		),
+	adminGetSeriesList: moderatorOrAdminProcedure
+		.input(AdminGetSeriesListInputSchema)
+		.output(AdminGetSeriesListOutputSchema)
+		.handler(async ({ input }) => await adminGetSeriesList(input)),
 	// create
 	createSerie: authorProcedure
 		.input(CreateSerieInputSchema)

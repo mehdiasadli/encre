@@ -20,9 +20,9 @@ export const UniqueSerieSchema = SerieSchema.pick({
 });
 export type UniqueSerieType = z.infer<typeof UniqueSerieSchema>;
 
-export const GetSeriesListInputSchema = z
+export const AdminGetSeriesListInputSchema = z
 	.object({
-		authors: z.string().array(),
+		authors: z.string().array(), // author slugs
 		statuses: ResourceStatusSchema.array(),
 		visibilities: ResourceVisibilitySchema.array(),
 	})
@@ -37,7 +37,27 @@ export const GetSeriesListInputSchema = z
 	.extend(SearchSchema.shape)
 	.extend(RangeFilterSchema.shape);
 
-export type GetSeriesListInputType = z.infer<typeof GetSeriesListInputSchema>;
+export type AdminGetSeriesListInputType = z.infer<
+	typeof AdminGetSeriesListInputSchema
+>;
+
+export const AdminGetSeriesListOutputSchema = PaginationOutputSchema(
+	SerieSchema.pick({
+		title: true,
+		slug: true,
+		visibility: true,
+	}).extend({
+		author: AuthorSchema.pick({
+			name: true,
+			slug: true,
+			image: true,
+		}),
+	}),
+);
+
+export type AdminGetSeriesListOutputType = z.infer<
+	typeof AdminGetSeriesListOutputSchema
+>;
 
 export const GetSeriesListOutputSchema = SerieSchema.pick({
 	title: true,
