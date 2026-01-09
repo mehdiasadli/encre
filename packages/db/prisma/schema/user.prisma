@@ -34,6 +34,8 @@ model User {
   reads     Read[]
   following AuthorFollow[]
   shelves   Shelf[]
+  feedbacks Feedback[]     @relation("FeedbackUser")
+  responses Feedback[]     @relation("ResponseBy")
 
   @@map("user")
 }

@@ -7,6 +7,7 @@ export * from "./ChapterCharacterSchema";
 export * from "./ChapterSchema";
 export * from "./CharacterSchema";
 export * from "./CommentSchema";
+export * from "./FeedbackSchema";
 export * from "./LikeSchema";
 export * from "./PlaceSchema";
 export * from "./PostAttachementSchema";

@@ -1,0 +1,58 @@
+enum FeedbackPriority {
+  unset
+  low
+  medium
+  high
+  critical
+}
+
+enum FeedbackSource {
+  website
+}
+
+enum FeedbackStatus {
+  pending // user has sent the feedback
+  reviewed // feedback has been reviewed by a moderator
+  rejected // feedback has been rejected by a moderator
+  resolved // feedback has been resolved
+  deleted
+}
+
+enum FeedbackType {
+  bug
+  security
+  feature_request
+  complaint
+  other
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  status   FeedbackStatus   @default(pending)
+  source   FeedbackSource   @default(website)
+  priority FeedbackPriority @default(unset)
+
+  userId    String? /// @zod.string.uuid({ message: "Invalid user ID" })
+  user      User?   @relation("FeedbackUser", fields: [userId], references: [id], onDelete: Cascade)
+  ipAddress String?
+  userAgent String?
+
+  name  String /// @zod.string.min(1, { message: "Name is required" }).max(50, { message: "Name cannot exceed 50 characters" })
+  email String /// @zod.string.email({ message: "Invalid email address" })
+
+  type    FeedbackType
+  subject String /// @zod.string.min(1, { message: "Subject is required" }).max(100, { message: "Subject cannot exceed 100 characters" })
+  content String /// @zod.string.min(1, { message: "Content is required" }).max(1000, { message: "Content cannot exceed 1000 characters" })
+  image   String? /// @zod.string.url({ message: "Invalid image URL" })
+
+  // response
+  response     String? /// @zod.string.max(1000, { message: "Response cannot exceed 1000 characters" })
+  responseAt   DateTime?
+  responseById String? /// @zod.string.uuid({ message: "Invalid response by ID" })
+  responseBy   User?     @relation("ResponseBy", fields: [responseById], references: [id], onDelete: Cascade)
+
+  @@map("feedback")
+}

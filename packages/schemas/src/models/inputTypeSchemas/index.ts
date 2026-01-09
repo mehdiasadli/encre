@@ -12,6 +12,11 @@ export { CharacterScalarFieldEnumSchema } from "./CharacterScalarFieldEnumSchema
 export { CommentScalarFieldEnumSchema } from "./CommentScalarFieldEnumSchema";
 export { CommentTypeSchema } from "./CommentTypeSchema";
 export { DeletionResourceSchema } from "./DeletionResourceSchema";
+export { FeedbackPrioritySchema } from "./FeedbackPrioritySchema";
+export { FeedbackScalarFieldEnumSchema } from "./FeedbackScalarFieldEnumSchema";
+export { FeedbackSourceSchema } from "./FeedbackSourceSchema";
+export { FeedbackStatusSchema } from "./FeedbackStatusSchema";
+export { FeedbackTypeSchema } from "./FeedbackTypeSchema";
 export { GenderSchema } from "./GenderSchema";
 export { LikeResourceSchema } from "./LikeResourceSchema";
 export { LikeScalarFieldEnumSchema } from "./LikeScalarFieldEnumSchema";
