@@ -8,6 +8,7 @@ import {
 	BookOpen,
 	CalendarDays,
 	Eye,
+	EyeIcon,
 	FileText,
 	GripVertical,
 	Heart,
@@ -16,6 +17,7 @@ import {
 	Trash2,
 	Users,
 } from "lucide-react";
+import Link from "next/link";
 import { EditBookSheet } from "@/components/edit-book-sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -175,30 +177,18 @@ export function BookCard({
 					}
 				/>
 
-				<Menu>
-					<MenuTrigger
-						render={
-							<Button variant="ghost" size="icon" className="rounded-none" />
-						}
-					>
-						<MoreHorizontal className="h-4 w-4" />
-					</MenuTrigger>
-					<MenuPopup align="end" className="rounded-none">
-						<MenuGroup>
-							<MenuGroupLabel>Actions</MenuGroupLabel>
-							<MenuItem className="rounded-none">
-								<Eye className="mr-2 h-4 w-4" /> View Chapters
-							</MenuItem>
-							<MenuItem className="rounded-none">
-								<FileText className="mr-2 h-4 w-4" /> Book Settings
-							</MenuItem>
-							<MenuSeparator className="rounded-none" />
-							<MenuItem className="rounded-none text-destructive focus:text-destructive">
-								<Trash2 className="mr-2 h-4 w-4" /> Delete Book
-							</MenuItem>
-						</MenuGroup>
-					</MenuPopup>
-				</Menu>
+				<Button
+					variant="ghost"
+					size="icon"
+					className="rounded-none"
+					render={
+						<Link
+							href={`/dashboard/author/series/${serieSlug}/books/${book.slug}`}
+						/>
+					}
+				>
+					<EyeIcon />
+				</Button>
 			</div>
 		</div>
 	);

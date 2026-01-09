@@ -1,6 +1,9 @@
+import { ArrowLeft } from "lucide-react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { AppSidebar } from "@/components/app-sidebar";
+import { AuthorGlobalSearchDialog } from "@/components/author-global-search-dialog";
+import { BackButton } from "@/components/back-button";
 import {
 	SidebarInset,
 	SidebarProvider,
@@ -27,12 +30,19 @@ export default async function AuthorLayout({
 		<SidebarProvider>
 			<AppSidebar />
 			<SidebarInset>
-				<header className="flex h-16 shrink-0 items-center gap-2">
+				<header className="flex h-16 shrink-0 items-center gap-2 px-4">
 					<div className="flex items-center gap-2 px-4">
+						<BackButton backLink="/dashboard/author">
+							<ArrowLeft />
+							Back
+						</BackButton>
 						<SidebarTrigger className="-ml-1" />
 					</div>
+					<div className="ml-auto">
+						<AuthorGlobalSearchDialog />
+					</div>
 				</header>
-				<main className="px-6 py-4">{children}</main>
+				<main className="px-4 py-4">{children}</main>
 			</SidebarInset>
 		</SidebarProvider>
 	);

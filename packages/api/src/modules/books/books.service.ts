@@ -10,7 +10,6 @@ import type {
 	CreateBookOutputType,
 	DeleteBookInputType,
 	DeleteBookOutputType,
-	GetBookInputType,
 	SwapBookOrderInputType,
 	SwapBookOrderOutputType,
 	UpdateBookInputType,
@@ -126,6 +125,16 @@ export class BooksService {
 				deletionReason: true,
 				id: true,
 			},
+			include: {
+				_count: {
+					select: {
+						chapters: true,
+						likes: true,
+						reads: true,
+						shelves: true,
+					},
+				},
+			},
 		});
 
 		if (!book) {
@@ -134,7 +143,10 @@ export class BooksService {
 			});
 		}
 
-		return book;
+		return {
+			...book,
+			status: book.status as Exclude<ResourceStatusType, "deleted">,
+		};
 	}
 
 	////

@@ -167,6 +167,9 @@ export const AuthorGetBookOutputSchema = BookSchema.omit({
 	authorId: true,
 	deletedAt: true,
 	deletionReason: true,
+}).extend({
+	status: ResourceStatusSchema.exclude(["deleted"]),
+	_count: CountSchema(["chapters", "likes", "reads", "shelves"]),
 });
 export type AuthorGetBookOutputType = z.infer<typeof AuthorGetBookOutputSchema>;
 
