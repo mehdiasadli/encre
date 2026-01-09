@@ -18,7 +18,7 @@ import {
 } from "@dnd-kit/sortable";
 import type {
 	AuthorGetBooksListOutputType,
-	GetSerieOutputType,
+	AuthorGetSerieOutputType,
 } from "@encre/schemas";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, BookIcon, PlusIcon, RefreshCcw } from "lucide-react";
@@ -58,7 +58,7 @@ import { orpc } from "@/utils/orpc";
 import { BookCard, BookCardLoading } from "./book-card";
 
 interface SerieBooklistProps {
-	serie: GetSerieOutputType;
+	serie: AuthorGetSerieOutputType;
 }
 
 export function SerieBooklist({ serie }: SerieBooklistProps) {

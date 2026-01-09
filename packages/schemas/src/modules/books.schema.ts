@@ -148,15 +148,7 @@ export type DeleteBookInputType = z.infer<typeof DeleteBookInputSchema>;
 export const DeleteBookOutputSchema = UniqueBookSchema;
 export type DeleteBookOutputType = z.infer<typeof DeleteBookOutputSchema>;
 
-export const GetBookInputSchema = UniqueBookSchema.extend({
-	chapters: z
-		.object({
-			count: z.number().int().positive(),
-			statuses: ResourceStatusSchema.array(),
-		})
-		.partial()
-		.optional(),
-});
+export const GetBookInputSchema = UniqueBookSchema;
 export type GetBookInputType = z.infer<typeof GetBookInputSchema>;
 
 export const AuthorGetBookInputSchema = UniqueBookSchema;

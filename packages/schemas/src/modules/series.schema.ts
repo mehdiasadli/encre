@@ -1,5 +1,6 @@
 import z from "zod";
 import {
+	CountSchema,
 	PaginationInputSchema,
 	PaginationOutputSchema,
 	RangeFilterSchema,
@@ -38,14 +39,20 @@ export const GetSeriesListInputSchema = z
 
 export type GetSeriesListInputType = z.infer<typeof GetSeriesListInputSchema>;
 
-export const GetSeriesListOutputSchema = PaginationOutputSchema(
-	SerieSchema.pick({
-		title: true,
-		slug: true,
-		status: true,
-		visibility: true,
-	}),
-);
+export const GetSeriesListOutputSchema = SerieSchema.pick({
+	title: true,
+	slug: true,
+	visibility: true,
+})
+	.extend({
+		author: AuthorSchema.pick({
+			name: true,
+			slug: true,
+			image: true,
+		}),
+	})
+	.array();
+
 export type GetSeriesListOutputType = z.infer<typeof GetSeriesListOutputSchema>;
 
 export const AuthorGetSeriesListOutputSchema = z.array(
@@ -92,26 +99,44 @@ export type DeleteSerieInputType = z.infer<typeof DeleteSerieInputSchema>;
 export const DeleteSerieOutputSchema = UniqueSerieSchema;
 export type DeleteSerieOutputType = z.infer<typeof DeleteSerieOutputSchema>;
 
-export const GetSerieInputSchema = UniqueSerieSchema.extend({
-	bookStatuses: ResourceStatusSchema.array().optional(),
-	bookCount: z.number().int().positive().optional(),
-});
+export const GetSerieInputSchema = UniqueSerieSchema;
 export type GetSerieInputType = z.infer<typeof GetSerieInputSchema>;
+
+export const AuthorGetSerieOutputSchema = SerieSchema.omit({
+	id: true,
+	authorId: true,
+	deletedAt: true,
+	deletionReason: true,
+}).extend({
+	_count: CountSchema(["books", "likes"]),
+});
+
+export type AuthorGetSerieOutputType = z.infer<
+	typeof AuthorGetSerieOutputSchema
+>;
 
 export const GetSerieOutputSchema = SerieSchema.omit({
 	id: true,
 	authorId: true,
 	deletedAt: true,
 	deletionReason: true,
+	status: true,
 }).extend({
+	_count: CountSchema(["books", "likes"]),
 	author: AuthorSchema.pick({
 		name: true,
 		slug: true,
 		image: true,
 	}),
-	_count: z.object({
-		books: z.number(),
-		likes: z.number(),
-	}),
 });
 export type GetSerieOutputType = z.infer<typeof GetSerieOutputSchema>;
+
+export const AdminGetSerieOutputSchema = SerieSchema.extend({
+	_count: CountSchema(["books", "likes"]),
+	author: AuthorSchema.pick({
+		name: true,
+		slug: true,
+		image: true,
+	}),
+});
+export type AdminGetSerieOutputType = z.infer<typeof AdminGetSerieOutputSchema>;

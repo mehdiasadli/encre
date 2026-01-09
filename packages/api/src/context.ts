@@ -11,7 +11,7 @@ export async function createContext(req: NextRequest) {
 
 	return {
 		session: session?.session,
-		user: { ...session?.user, role },
+		user: session?.user ? { ...session.user, role } : null,
 	};
 }
 

@@ -1,4 +1,4 @@
-import type { GetSerieOutputType } from "@encre/schemas";
+import type { AuthorGetSerieOutputType } from "@encre/schemas";
 import { formatEnum } from "@encre/utils";
 import { format } from "date-fns";
 import { Edit3, Eye, EyeOff, Lock, Plus, Trash, Users } from "lucide-react";
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface SerieHeaderProps {
-	serie: GetSerieOutputType;
+	serie: AuthorGetSerieOutputType;
 }
 
 export function SerieHeader({ serie }: SerieHeaderProps) {
