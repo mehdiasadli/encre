@@ -1,0 +1,17 @@
+export const resourceTitleBlocklist = [
+	"create",
+	"edit",
+	"delete",
+	"publish",
+	"unpublish",
+	"archive",
+	"unarchive",
+	"cancel",
+	"uncancel",
+	"coming_soon",
+	"draft",
+	"archived",
+	"cancelled",
+	"deleted",
+	"published",
+];

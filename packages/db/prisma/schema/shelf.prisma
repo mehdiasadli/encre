@@ -1,0 +1,44 @@
+enum ShelfVisibility {
+  public
+  members
+  private
+}
+
+model Shelf {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  slug String @unique /// @zod.string.min(1, { message: "Slug is required" })
+
+  visibility ShelfVisibility @default(private)
+
+  name        String /// @zod.string.min(1, { message: "Name is required" })
+  description String? /// @zod.string.max(1000, { message: "Description cannot exceed 1000 characters" })
+  image       String? /// @zod.string.url({ message: "Invalid image URL" })
+
+  userId    String /// @zod.string.uuid({ message: "Invalid user ID" })
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isOrdered Boolean @default(false)
+
+  books ShelfBook[]
+
+  @@map("shelf")
+}
+
+model ShelfBook {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  shelfId String /// @zod.string.uuid({ message: "Invalid shelf ID" })
+  shelf   Shelf  @relation(fields: [shelfId], references: [id], onDelete: Cascade)
+
+  bookId String /// @zod.string.uuid({ message: "Invalid book ID" })
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  order Int? /// @zod.number.int({ message: "Invalid order" }).min(1, { message: "Order must be at least 1" })
+
+  @@unique([shelfId, order])
+  @@map("shelf_book")
+}

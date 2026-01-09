@@ -1,0 +1,39 @@
+enum ArticleType {
+  book
+  chapter
+  character
+  place
+  other
+}
+
+/// @zod.import(["import { slugRegex } from '../../regex';"])
+model Article {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  slug      String   @unique /// @zod.string.regex(slugRegex, { message: "Invalid slug" })
+
+  type ArticleType
+
+  title       String /// @zod.string.min(2, { message: "Title must be at least 2 characters" }).max(50, { message: "Title cannot exceed 50 characters" })
+  description String? /// @zod.string.max(1000, { message: "Description cannot exceed 1000 characters" })
+  image       String? /// @zod.string.url({ message: "Invalid image URL" })
+  content     String?
+
+  bookId String? /// @zod.string.uuid({ message: "Invalid book ID" })
+  book   Book?   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  chapterId String? /// @zod.string.uuid({ message: "Invalid chapter ID" })
+  chapter   Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  characterId String? /// @zod.string.uuid({ message: "Invalid character ID" })
+  character   Character? @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  placeId String? /// @zod.string.uuid({ message: "Invalid place ID" })
+  place   Place?  @relation(fields: [placeId], references: [id], onDelete: Cascade)
+
+  comments Comment[]
+  likes    Like[]
+
+  @@map("article")
+}

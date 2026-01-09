@@ -1,0 +1,29 @@
+/// @zod.import(["import { slugRegex } from '../../regex';"])
+model Serie {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  slug      String   @unique /// @zod.string.regex(slugRegex, { message: "Invalid slug" })
+
+  deletionReason DeletionResource @default(serie) // always serie
+  deletedAt      DateTime?
+
+  title       String /// @zod.string.min(2, { message: "Title must be at least 2 characters" }).max(50, { message: "Title cannot exceed 50 characters" })
+  description String? /// @zod.string.max(1000, { message: "Description cannot exceed 1000 characters" })
+  image       String? /// @zod.string.url({ message: "Invalid image URL" })
+  authorId    String /// @zod.string.uuid({ message: "Invalid author ID" })
+  author      Author  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  status     ResourceStatus     @default(draft)
+  visibility ResourceVisibility @default(public)
+
+  books        Book[]
+  chapters     Chapter[]
+  places       Place[]
+  characters   Character[]
+  attachements PostAttachement[]
+  comments     Comment[]
+  likes        Like[]
+
+  @@map("serie")
+}

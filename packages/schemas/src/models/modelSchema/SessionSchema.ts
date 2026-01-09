@@ -10,9 +10,9 @@ export const SessionSchema = z.object({
 	updatedAt: z.coerce.date(),
 	expiresAt: z.coerce.date(),
 	token: z.string(),
-	ipAddress: z.string().nullable(),
-	userAgent: z.string().nullable(),
-	userId: z.uuid({ message: "Invalid user ID" }),
+	ipAddress: z.string().nullish(),
+	userAgent: z.string().nullish(),
+	userId: z.string(),
 });
 
 export type Session = z.infer<typeof SessionSchema>;

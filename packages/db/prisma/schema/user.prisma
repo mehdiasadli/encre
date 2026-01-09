@@ -17,11 +17,64 @@ model User {
   username      String   @unique
   role          UserRole @default(user)
   emailVerified Boolean  @default(false)
+  /// @zod.string.url({ message: "Invalid image URL" })
   image         String?
 
+  twoFactorEnabled Boolean?
+
+  isAuthor Boolean @default(false)
+  authorId String? @unique
+
+  author    Author?
   sessions  Session[]
   accounts  Account[]
   twoFactor TwoFactor[]
+  comments  Comment[]
+  likes     Like[]
+  reads     Read[]
+  following AuthorFollow[]
+  shelves   Shelf[]
 
   @@map("user")
+}
+
+/// @zod.import(["import { slugRegex } from '../../regex';"])
+model Author {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String @unique /// @zod.string.uuid({ message: "Invalid user ID" })
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name    String /// @zod.string.min(1, { message: "Name is required" }).max(50, { message: "Name cannot exceed 50 characters" })
+  slug    String  @unique /// @zod.string.regex(slugRegex, { message: "Invalid slug" })
+  bio     String? /// @zod.string.max(1000, { message: "Bio cannot exceed 1000 characters" })
+  image   String? /// @zod.string.url({ message: "Invalid image URL" })
+  website String? /// @zod.string.url({ message: "Invalid website URL" })
+
+  series       Serie[]
+  books        Book[]
+  chapters     Chapter[]
+  attachements PostAttachement[]
+  comments     Comment[]
+  likes        Like[]
+  followers    AuthorFollow[]
+
+  @@map("author")
+}
+
+model AuthorFollow {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String /// @zod.string.uuid({ message: "Invalid user ID" })
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  authorId String /// @zod.string.uuid({ message: "Invalid author ID" })
+  author   Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, authorId])
+  @@map("author_follow")
 }

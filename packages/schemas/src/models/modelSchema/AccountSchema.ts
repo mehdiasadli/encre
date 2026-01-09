@@ -10,14 +10,14 @@ export const AccountSchema = z.object({
 	updatedAt: z.coerce.date(),
 	accountId: z.string(),
 	providerId: z.string(),
-	userId: z.uuid({ message: "Invalid user ID" }),
-	accessToken: z.string().nullable(),
-	refreshToken: z.string().nullable(),
-	idToken: z.string().nullable(),
-	accessTokenExpiresAt: z.coerce.date().nullable(),
-	refreshTokenExpiresAt: z.coerce.date().nullable(),
-	scope: z.string().nullable(),
-	password: z.string().nullable(),
+	userId: z.string(),
+	accessToken: z.string().nullish(),
+	refreshToken: z.string().nullish(),
+	idToken: z.string().nullish(),
+	accessTokenExpiresAt: z.coerce.date().nullish(),
+	refreshTokenExpiresAt: z.coerce.date().nullish(),
+	scope: z.string().nullish(),
+	password: z.string().nullish(),
 });
 
 export type Account = z.infer<typeof AccountSchema>;

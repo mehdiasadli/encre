@@ -1,29 +1,32 @@
 {
-  "name": "@encre/api",
-  "type": "module",
-  "exports": {
-    ".": {
-      "default": "./src/index.ts"
-    },
-    "./*": {
-      "default": "./src/*.ts"
-    }
-  },
-  "scripts": {},
-  "dependencies": {
-    "@encre/auth": "workspace:*",
-    "@encre/db": "workspace:*",
-    "@encre/env": "workspace:*",
-    "@orpc/client": "catalog:",
-    "@orpc/openapi": "catalog:",
-    "@orpc/server": "catalog:",
-    "@orpc/zod": "catalog:",
-    "dotenv": "catalog:",
-    "next": "catalog:",
-    "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@encre/config": "workspace:*",
-    "typescript": "catalog:"
-  }
+	"name": "@encre/api",
+	"type": "module",
+	"exports": {
+		".": {
+			"default": "./src/index.ts"
+		},
+		"./*": {
+			"default": "./src/*.ts"
+		}
+	},
+	"scripts": {},
+	"dependencies": {
+		"@encre/auth": "workspace:*",
+		"@encre/db": "workspace:*",
+		"@encre/env": "workspace:*",
+		"@orpc/client": "catalog:",
+		"@orpc/openapi": "catalog:",
+		"@orpc/server": "catalog:",
+		"@orpc/zod": "catalog:",
+		"@encre/schemas": "workspace:*",
+		"@encre/utils": "workspace:*",
+		"@encre/logger": "workspace:*",
+		"dotenv": "catalog:",
+		"next": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@encre/config": "workspace:*",
+		"typescript": "catalog:"
+	}
 }

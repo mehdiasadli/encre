@@ -1,0 +1,59 @@
+enum CommentType {
+  post
+  comment
+  serie
+  book
+  chapter
+  character
+  place
+  author
+  article
+}
+
+/// @zod.import(["import { slugRegex } from '../../regex';"])
+model Comment {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  slug      String   @unique /// @zod.string.regex(slugRegex, { message: "Invalid slug" })
+
+  content String /// @zod.string.min(1, { message: "Content is required" }).max(1000, { message: "Content cannot exceed 1000 characters" })
+
+  userId String /// @zod.string.uuid({ message: "Invalid user ID" })
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type  CommentType
+  depth Int         @default(0) /// @zod.number.int({ message: "Invalid depth" }).min(0, { message: "Depth must be at least 0" }).max(5, { message: "Comment depth cannot exceed the maximum depth" })
+
+  parentCommentId String? /// @zod.string.uuid({ message: "Invalid parent comment ID" })
+  parentComment   Comment?  @relation("CommentReply", fields: [parentCommentId], references: [id], onDelete: Cascade)
+  replies         Comment[] @relation("CommentReply")
+
+  postId String? /// @zod.string.uuid({ message: "Invalid post ID" })
+  post   Post?   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  serieId String? /// @zod.string.uuid({ message: "Invalid serie ID" })
+  serie   Serie?  @relation(fields: [serieId], references: [id], onDelete: Cascade)
+
+  bookId String? /// @zod.string.uuid({ message: "Invalid book ID" })
+  book   Book?   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  chapterId String? /// @zod.string.uuid({ message: "Invalid chapter ID" })
+  chapter   Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  characterId String? /// @zod.string.uuid({ message: "Invalid character ID" })
+  character   Character? @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  placeId String? /// @zod.string.uuid({ message: "Invalid place ID" })
+  place   Place?  @relation(fields: [placeId], references: [id], onDelete: Cascade)
+
+  authorId String? /// @zod.string.uuid({ message: "Invalid author ID" })
+  author   Author? @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  articleId String? /// @zod.string.uuid({ message: "Invalid article ID" })
+  article   Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  likes Like[]
+
+  @@map("comment")
+}

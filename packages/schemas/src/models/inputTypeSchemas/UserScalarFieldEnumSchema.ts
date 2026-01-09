@@ -10,6 +10,9 @@ export const UserScalarFieldEnumSchema = z.enum([
 	"role",
 	"emailVerified",
 	"image",
+	"twoFactorEnabled",
+	"isAuthor",
+	"authorId",
 ]);
 
 export default UserScalarFieldEnumSchema;

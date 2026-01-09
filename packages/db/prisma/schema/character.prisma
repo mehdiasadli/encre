@@ -1,0 +1,59 @@
+enum Gender {
+  male
+  female
+  not_specified
+  other
+}
+
+enum AliveStatus {
+  alive
+  dead
+  unknown // not specified
+}
+
+/// @zod.import(["import { slugRegex } from '../../regex';"])
+model Character {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  slug      String   @unique /// @zod.string.regex(slugRegex, { message: "Invalid slug" })
+
+  deletionReason DeletionResource?
+  deletedAt      DateTime?
+
+  name        String /// @zod.string.min(1, { message: "Name is required" }).max(50, { message: "Name cannot exceed 50 characters" })
+  description String? /// @zod.string.max(1000, { message: "Description cannot exceed 1000 characters" })
+  image       String? /// @zod.string.url({ message: "Invalid image URL" })
+
+  status ResourceStatus @default(draft)
+
+  serieId String /// @zod.string.uuid({ message: "Invalid serie ID" })
+  serie   Serie  @relation(fields: [serieId], references: [id], onDelete: Cascade)
+
+  // character information
+  firstName    String? /// @zod.string.max(50, { message: "First name cannot exceed 50 characters" })
+  middleName   String? /// @zod.string.max(50, { message: "Middle name cannot exceed 50 characters" })
+  lastName     String? /// @zod.string.max(50, { message: "Last name cannot exceed 50 characters" })
+  aliases      String[] /// @zod.string.min(1, { message: "Alias is required" }).max(50, { message: "Alias cannot exceed 50 characters" })
+  gender       Gender?
+  dayOfBirth   Int? /// @zod.number.int({ message: "Invalid day of birth" }).min(1, { message: "Day of birth must be at least 1" }).max(31, { message: "Day of birth cannot exceed 31" })
+  monthOfBirth Int? /// @zod.number.int({ message: "Invalid month of birth" }).min(1, { message: "Month of birth must be at least 1" }).max(12, { message: "Month of birth cannot exceed 12" })
+  yearOfBirth  Int? /// @zod.number.int({ message: "Invalid year of birth" })
+  dayOfDeath   Int? /// @zod.number.int({ message: "Invalid day of birth" }).min(1, { message: "Day of birth must be at least 1" }).max(31, { message: "Day of birth cannot exceed 31" })
+  monthOfDeath Int? /// @zod.number.int({ message: "Invalid month of birth" }).min(1, { message: "Month of birth must be at least 1" }).max(12, { message: "Month of birth cannot exceed 12" })
+  yearOfDeath  Int? /// @zod.number.int({ message: "Invalid year of birth" }) 
+  aliveStatus  AliveStatus @default(unknown)
+
+  placeOfBirthId String? /// @zod.string.uuid({ message: "Invalid place of birth ID" })
+  placeOfBirth   Place?  @relation("CharacterPlaceOfBirth", fields: [placeOfBirthId], references: [id], onDelete: Cascade)
+  placeOfDeathId String? /// @zod.string.uuid({ message: "Invalid place of death ID" })
+  placeOfDeath   Place?  @relation("CharacterPlaceOfDeath", fields: [placeOfDeathId], references: [id], onDelete: Cascade)
+
+  articles     Article[]
+  chapters     ChapterCharacter[]
+  attachements PostAttachement[]
+  comments     Comment[]
+  likes        Like[]
+
+  @@map("character")
+}

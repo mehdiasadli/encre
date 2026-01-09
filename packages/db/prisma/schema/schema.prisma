@@ -20,9 +20,8 @@ generator zod {
   addInputTypeValidation           = false
   addIncludeType                   = false
   addSelectType                    = false
-
-  useMultipleFiles = true
-  writeBarrelFiles = true
+  useMultipleFiles                 = true
+  writeNullishInModelTypes         = true
 }
 
 enum SortOrder {

@@ -1,0 +1,19 @@
+{
+	"name": "@encre/utils",
+	"exports": {
+		".": "./src/index.ts",
+		"./*": "./src/*.ts"
+	},
+	"type": "module",
+	"private": true,
+	"devDependencies": {
+		"@encre/config": "workspace:*"
+	},
+	"dependencies": {
+		"@encre/env": "workspace:*",
+		"@encre/schemas": "workspace:*"
+	},
+	"peerDependencies": {
+		"typescript": "catalog:"
+	}
+}

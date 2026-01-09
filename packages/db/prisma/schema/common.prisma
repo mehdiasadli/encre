@@ -1,0 +1,23 @@
+enum ResourceStatus {
+  draft // started, not yet published
+  published // published, can be read
+  archived // archived, no longer published
+  coming_soon // coming soon, not yet published, basic info can be seen
+  cancelled // cancelled, no longer published, but can be read
+  deleted // deleted, no longer published
+}
+
+enum ResourceVisibility {
+  public // public, can be read by anyone
+  private // private, can be read by the author only
+  unlisted // unlisted, can be only read with a link
+  followers // only followers can read
+  members // only authorized users can read
+}
+
+enum DeletionResource {
+  serie // deletes serie, books, chapters, characters
+  book // deletes book, chapters
+  chapter // deletes chapter
+  character // deletes character
+}

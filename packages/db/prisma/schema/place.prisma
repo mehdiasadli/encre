@@ -1,0 +1,31 @@
+/// @zod.import(["import { slugRegex } from '../../regex';"])
+model Place {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  slug      String   @unique /// @zod.string.regex(slugRegex, { message: "Invalid slug" })
+
+  name        String /// @zod.string.min(1, { message: "Name is required" }).max(100, { message: "Name cannot exceed 100 characters" })
+  address     String? /// @zod.string.max(512, { message: "Address cannot exceed 512 characters" })
+  lat         Float? /// @zod.custom.use(z.number().refine(value => value >= -90 && value <= 90, { message: "Latitude must be between -90 and 90" }))
+  lng         Float? /// @zod.custom.use(z.number().refine(value => value >= -180 && value <= 180, { message: "Longitude must be between -180 and 180" }))
+  description String? /// @zod.string.max(1000, { message: "Description cannot exceed 1000 characters" })
+  image       String? /// @zod.string.url({ message: "Invalid image URL" })
+
+  serieId String /// @zod.string.uuid({ message: "Invalid serie ID" })
+  serie   Serie  @relation(fields: [serieId], references: [id], onDelete: Cascade)
+
+  depth    Int     @default(0) /// @zod.number.int({ message: "Invalid depth" }).min(0, { message: "Depth must be at least 0" }).max(10, { message: "Depth cannot exceed 10" })
+  parentId String? /// @zod.string.uuid({ message: "Invalid parent ID" })
+  parent   Place?  @relation("PlaceHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children Place[] @relation("PlaceHierarchy")
+
+  bornCharacters Character[]       @relation("CharacterPlaceOfBirth")
+  diedCharacters Character[]       @relation("CharacterPlaceOfDeath")
+  articles       Article[]
+  attachements   PostAttachement[]
+  comments       Comment[]
+  likes          Like[]
+
+  @@map("place")
+}

@@ -9,8 +9,8 @@ export const TwoFactorSchema = z.object({
 	createdAt: z.coerce.date(),
 	updatedAt: z.coerce.date(),
 	userId: z.string(),
-	secret: z.string().nullable(),
-	backupCodes: z.string().nullable(),
+	secret: z.string().nullish(),
+	backupCodes: z.string().nullish(),
 });
 
 export type TwoFactor = z.infer<typeof TwoFactorSchema>;

@@ -1,0 +1,64 @@
+enum PostAttachementType {
+  post
+  author
+  comment
+  serie
+  book
+  chapter
+  character
+  place
+}
+
+/// @zod.import(["import { slugRegex } from '../../regex';"])
+model Post {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  /// @zod.string.regex(slugRegex, { message: "Invalid slug" })
+  slug      String   @unique
+
+  content String? /// @zod.string.max(1000, { message: "Content cannot exceed 1000 characters" })
+  image   String? /// @zod.string.url({ message: "Invalid image URL" })
+
+  attachement  PostAttachement?  @relation("MainPost")
+  attachements PostAttachement[] @relation("AttachedPost")
+
+  comments Comment[]
+  likes    Like[]
+
+  @@map("post")
+}
+
+model PostAttachement {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  postId String @unique /// @zod.string.uuid({ message: "Invalid post ID" })
+  post   Post   @relation("MainPost", fields: [postId], references: [id], onDelete: Cascade)
+
+  type PostAttachementType
+
+  serieId String? /// @zod.string.uuid({ message: "Invalid serie ID" })
+  serie   Serie?  @relation(fields: [serieId], references: [id], onDelete: Cascade)
+
+  bookId String? /// @zod.string.uuid({ message: "Invalid book ID" })
+  book   Book?   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  chapterId String? /// @zod.string.uuid({ message: "Invalid chapter ID" })
+  chapter   Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  characterId String? /// @zod.string.uuid({ message: "Invalid character ID" })
+  character   Character? @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  placeId String? /// @zod.string.uuid({ message: "Invalid place ID" })
+  place   Place?  @relation(fields: [placeId], references: [id], onDelete: Cascade)
+
+  authorId String? /// @zod.string.uuid({ message: "Invalid author ID" })
+  author   Author? @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  attachedPostId String? /// @zod.string.uuid({ message: "Invalid attached post ID" })
+  attachedPost   Post?   @relation("AttachedPost", fields: [attachedPostId], references: [id], onDelete: Cascade)
+
+  @@map("post_attachement")
+}

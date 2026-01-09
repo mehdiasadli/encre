@@ -12,7 +12,8 @@
 		}
 	},
 	"dependencies": {
-		"zod": "catalog:"
+		"zod": "catalog:",
+		"@encre/env": "workspace:*"
 	},
 	"devDependencies": {
 		"@encre/config": "workspace:*",

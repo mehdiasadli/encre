@@ -7,7 +7,6 @@ model Session {
   token     String  @unique
   ipAddress String?
   userAgent String?
-  /// @zod.string.uuid({ message: "Invalid user ID" })
   userId    String
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -22,7 +21,6 @@ model Account {
 
   accountId             String
   providerId            String
-  /// @zod.string.uuid({ message: "Invalid user ID" })
   userId                String
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?

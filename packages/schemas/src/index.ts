@@ -1,4 +1,8 @@
 /// GENERATED
 
-export * from "./models/inputTypeSchemas/index";
-export * from "./models/modelSchema/index";
+export * from "./common.schema";
+export * from "./models/inputTypeSchemas";
+export * from "./models/modelSchema";
+export * from "./modules";
+
+export * from "./regex";

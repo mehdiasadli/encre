@@ -54,7 +54,19 @@ export const auth = betterAuth({
 			},
 			role: {
 				type: "string",
-				required: true,
+				required: false,
+				input: false,
+				returned: true,
+			},
+			isAuthor: {
+				type: "boolean",
+				required: false,
+				input: false,
+				returned: true,
+			},
+			authorId: {
+				type: "string",
+				required: false,
 				input: false,
 				returned: true,
 			},
