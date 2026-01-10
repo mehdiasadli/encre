@@ -25,6 +25,12 @@ export const env = createEnv({
 		MAX_BOOKS_PER_SERIE: z.coerce.number().int().positive(),
 		MAX_CHARACTERS_PER_SERIE: z.coerce.number().int().positive(),
 		MAX_CHAPTERS_PER_BOOK: z.coerce.number().int().positive(),
+
+		// SENTRY
+		NEXT_PUBLIC_SENTRY_DSN: z.url(),
+		SENTRY_ORG: z.string(),
+		SENTRY_PROJECT: z.string(),
+
 		// CLIENT
 		NEXT_PUBLIC_BASE_URL: z.url(),
 	},

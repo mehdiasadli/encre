@@ -25,6 +25,7 @@
 		"@orpc/zod": "catalog:",
 		"@polar-sh/better-auth": "catalog:",
 		"@prisma/client": "catalog:",
+		"@sentry/nextjs": "^10.32.1",
 		"@tanstack/react-form": "^1.27.3",
 		"@tanstack/react-pacer": "^0.19.1",
 		"@tanstack/react-query": "^5.90.12",
