@@ -1,6 +1,22 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"ui": "tui",
+	"globalEnv": [
+		"NODE_ENV",
+		"DATABASE_URL",
+		"BETTER_AUTH_URL",
+		"BETTER_AUTH_SECRET",
+		"CORS_ORIGIN",
+		"LOG_LEVEL",
+		"MAX_COMMENT_DEPTH",
+		"MAX_PLACE_DEPTH",
+		"MAX_SERIES_PER_AUTHOR",
+		"MAX_BOOKS_PER_SERIE",
+		"MAX_CHARACTERS_PER_SERIE",
+		"MAX_CHAPTERS_PER_BOOK",
+		"SENTRY_PROJECT",
+		"SENTRY_ORG"
+	],
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
@@ -30,8 +46,7 @@
 			"persistent": true
 		},
 		"db:generate": {
-			"cache": false,
-			"persistent": true
+			"cache": false
 		}
 	}
 }
