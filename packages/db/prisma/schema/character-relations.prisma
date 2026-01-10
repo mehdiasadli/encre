@@ -1,0 +1,37 @@
+enum CharacterRelationType {
+  parent
+  partner
+}
+
+enum ParentType {
+  father
+  mother
+  unknown
+}
+
+enum PartnerType {
+  spouse // married
+  lover // in a relationship
+  unknown
+}
+
+model CharacterRelation {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type        CharacterRelationType
+  parentType  ParentType? // type=parent
+  partnerType PartnerType? // type=partner
+
+  characterId String /// @zod.string.uuid({ message: "Invalid character ID" })
+  character   Character @relation("MainCharacter", fields: [characterId], references: [id], onDelete: Cascade)
+
+  relatedCharacterId String /// @zod.string.uuid({ message: "Invalid related character ID" })
+  relatedCharacter   Character @relation("RelatedCharacter", fields: [relatedCharacterId], references: [id], onDelete: Cascade)
+
+  @@unique([characterId, relatedCharacterId, type])
+  @@index([characterId])
+  @@index([relatedCharacterId])
+  @@map("character_relation")
+}

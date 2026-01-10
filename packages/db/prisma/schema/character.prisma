@@ -54,6 +54,8 @@ model Character {
   attachements PostAttachement[]
   comments     Comment[]
   likes        Like[]
+  relatedTo    CharacterRelation[] @relation("MainCharacter")
+  relatedFrom  CharacterRelation[] @relation("RelatedCharacter")
 
   @@map("character")
 }

@@ -5,6 +5,7 @@ export * from "./AuthorSchema";
 export * from "./BookSchema";
 export * from "./ChapterCharacterSchema";
 export * from "./ChapterSchema";
+export * from "./CharacterRelationSchema";
 export * from "./CharacterSchema";
 export * from "./CommentSchema";
 export * from "./FeedbackSchema";
