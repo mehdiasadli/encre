@@ -2,6 +2,8 @@
 	"$schema": "https://turbo.build/schema.json",
 	"ui": "tui",
 	"globalEnv": [
+		"DATABASE_URL",
+		"BETTER_AUTH_SECRET",
 		"NODE_ENV",
 		"BETTER_AUTH_URL",
 		"CORS_ORIGIN",
