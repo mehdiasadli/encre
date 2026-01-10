@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { authClient } from "@/lib/auth-client";
 import { BecomeAuthorForm } from "./become-author-form";
 
@@ -19,11 +20,11 @@ export default async function BecomeAnAuthorPage() {
 	}
 
 	return (
-		<div>
+		<Suspense>
 			<BecomeAuthorForm
 				username={session.data.user.username}
 				name={session.data.user.name}
 			/>
-		</div>
+		</Suspense>
 	);
 }
