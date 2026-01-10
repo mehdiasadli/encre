@@ -21,8 +21,13 @@ export const CreateCharacterInputSchema = CharacterSchema.pick({
 	// TODO: implement Place and use on creating characters
 	// placeOfBirthId: true,
 	// placeOfDeathId: true,
-	serieId: true,
-});
+})
+	.partial({
+		name: true,
+	})
+	.extend({
+		serie: SerieSchema.shape.slug,
+	});
 export type CreateCharacterInput = z.infer<typeof CreateCharacterInputSchema>;
 
 export const CreateCharacterOutputSchema = CharacterSchema.pick({
@@ -78,12 +83,18 @@ export const GetManyCharactersOutputSchema = CharacterSchema.pick({
 	firstName: true,
 	middleName: true,
 	lastName: true,
-}).extend({
-	serie: SerieSchema.pick({
-		title: true,
-	}),
-	_count: CountSchema(["likes"]),
-});
+})
+	.extend({
+		serie: SerieSchema.pick({
+			title: true,
+		}),
+		_count: CountSchema(["likes"]),
+	})
+	.array();
+
+export type GetManyCharactersOutput = z.infer<
+	typeof GetManyCharactersOutputSchema
+>;
 
 // UPDATE
 export const UpdateCharacterInputSchema = CharacterSchema.pick({
