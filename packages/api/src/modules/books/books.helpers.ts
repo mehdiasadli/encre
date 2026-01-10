@@ -16,7 +16,7 @@ export async function checkBookLimit(authorId: string) {
 		},
 	});
 
-	if (currentBookCount > env.MAX_BOOKS_PER_SERIE) {
+	if (currentBookCount >= env.MAX_BOOKS_PER_SERIE) {
 		throw new ORPCError("BAD_REQUEST", {
 			message: `You have reached the maximum number of books (${env.MAX_BOOKS_PER_SERIE} per author). You cannot create more books.`,
 		});
@@ -55,7 +55,7 @@ export async function handleBookStatusChange(
 	book: { id: string; status: ResourceStatusType },
 	newStatus: ResourceStatusType | undefined,
 ) {
-	validateAuthorResourceStatusUpdate(book.status, newStatus, async () => {
+	await validateAuthorResourceStatusUpdate(book.status, newStatus, async () => {
 		const [publishedChapterCount] = await prisma.$transaction([
 			prisma.chapter.count({
 				where: { bookId: book.id, status: "published" },
