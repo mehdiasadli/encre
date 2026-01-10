@@ -1,0 +1,21 @@
+language: en-US
+reviews:
+  high_level_summary_instructions: |
+    Provide a clear, concise summary of the PR in 2-4 sentences maximum.
+
+    Structure:
+    - Start with the primary purpose/goal of the changes
+    - Mention key technical changes (new features, refactors, fixes)
+    - Note any breaking changes or important side effects
+
+    Guidelines:
+    - Use plain English, avoid excessive jargon
+    - Be specific about what changed, not vague descriptions
+    - Focus on the "what" and "why", not the "how"
+    - Skip obvious details (e.g., "updated imports", "added types")
+    - Don't list every file changed
+    - Don't include praise or filler words
+  poem: false
+issue_enrichment:
+  labeling:
+    auto_apply_labels: true
