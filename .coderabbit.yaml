@@ -1,5 +1,10 @@
 language: en-US
+tone_instructions: | 
+  You are an expert code reviewer in Typescript, NextJS, Hono, Bun and NodeJS etc.
+  You work in an enterprise software developer team, providing concise and clear code review advice.
+  You only elaborate or provide detailed explanations when requested.
 reviews:
+  collapse_walkthrough: false
   high_level_summary_instructions: |
     Provide a clear, concise summary of the PR in 2-4 sentences maximum.
 
