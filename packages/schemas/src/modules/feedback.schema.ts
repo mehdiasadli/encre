@@ -5,6 +5,7 @@ import {
 	FeedbackSchema,
 	FeedbackStatusSchema,
 	FeedbackTypeSchema,
+	UserSchema,
 } from "../models";
 
 ////
@@ -28,10 +29,11 @@ export type CreateFeedbackInput = z.infer<typeof CreateFeedbackInputSchema>;
 export const ResponseFeedbackInputSchema = FeedbackSchema.pick({
 	id: true,
 	response: true,
-	status: true,
-}).partial({
-	status: true,
+}).extend({
+	status: FeedbackStatusSchema.exclude(["deleted", "pending"]).optional(),
 });
+
+export type ResponseFeedbackInput = z.infer<typeof ResponseFeedbackInputSchema>;
 
 ////
 // DELETE
@@ -47,11 +49,13 @@ export type DeleteFeedbackInput = z.infer<typeof DeleteFeedbackInputSchema>;
 ////
 export const UpdateFeedbackInputSchema = FeedbackSchema.pick({
 	id: true,
-	status: true,
 	source: true,
 	priority: true,
 	type: true,
 })
+	.extend({
+		status: FeedbackStatusSchema.exclude(["deleted"]),
+	})
 	.partial()
 	.required({ id: true });
 
@@ -62,7 +66,7 @@ export type UpdateFeedbackInput = z.infer<typeof UpdateFeedbackInputSchema>;
 ////
 export const GetManyFeedbackInputSchema = z
 	.object({
-		statuses: FeedbackStatusSchema.array(),
+		statuses: FeedbackStatusSchema.exclude(["deleted"]).array(),
 		hasResponse: z.boolean(),
 	})
 	.partial()
@@ -98,7 +102,24 @@ export type AdminGetManyFeedbackInput = z.infer<
 	typeof AdminGetManyFeedbackInputSchema
 >;
 
-export const AdminGetManyFeedbackOutputSchema = FeedbackSchema;
+export const AdminGetManyFeedbackOutputSchema = FeedbackSchema.omit({
+	userId: true,
+	image: true,
+	responseById: true,
+})
+	.extend({
+		user: UserSchema.pick({
+			email: true,
+			name: true,
+			username: true,
+		}).nullable(),
+		responseBy: UserSchema.pick({
+			email: true,
+			name: true,
+			username: true,
+		}).nullable(),
+	})
+	.array();
 
 export type AdminGetManyFeedbackOutput = z.infer<
 	typeof AdminGetManyFeedbackOutputSchema
