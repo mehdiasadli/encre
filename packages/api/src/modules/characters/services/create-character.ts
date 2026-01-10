@@ -10,7 +10,7 @@ export async function createCharacter(
 	input: CreateCharacterInput,
 	authorId: string,
 ): Promise<CreateCharacterOutput> {
-	const serie = await prisma.serie.findUnique({
+	const serie = await prisma.serie.findFirst({
 		where: {
 			slug: input.serie,
 			authorId,
@@ -69,6 +69,7 @@ async function generateNameAndSlug(
 				name: {
 					startsWith: "Unnamed Character",
 				},
+				status: { not: "deleted" },
 			},
 		});
 
@@ -76,7 +77,7 @@ async function generateNameAndSlug(
 	}
 
 	const slug = await generateUniqueSlug(resultName, async (slug) => {
-		await prisma.character.findUnique({
+		return await prisma.character.findUnique({
 			where: {
 				slug,
 				status: { not: "deleted" },
