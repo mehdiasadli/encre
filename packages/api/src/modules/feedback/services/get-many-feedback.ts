@@ -30,8 +30,8 @@ export async function getManyFeedback(
 		where.status = { in: input.statuses };
 	}
 
-	if (input.hasResponse) {
-		where.response = { not: null };
+	if (input.hasResponse !== undefined) {
+		where.response = input.hasResponse ? { not: null } : null;
 	}
 
 	if (input.query) {
