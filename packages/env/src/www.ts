@@ -4,10 +4,12 @@ import z from "zod";
 export const env = createEnv({
 	client: {
 		NEXT_PUBLIC_BASE_URL: z.url(),
+		NEXT_PUBLIC_SENTRY_DSN: z.url(),
 	},
 	runtimeEnv: {
 		NEXT_PUBLIC_BASE_URL:
 			process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001",
+		NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
 	},
 	emptyStringAsUndefined: true,
 });
