@@ -3,9 +3,7 @@
 	"ui": "tui",
 	"globalEnv": [
 		"NODE_ENV",
-		"DATABASE_URL",
 		"BETTER_AUTH_URL",
-		"BETTER_AUTH_SECRET",
 		"CORS_ORIGIN",
 		"LOG_LEVEL",
 		"MAX_COMMENT_DEPTH",
