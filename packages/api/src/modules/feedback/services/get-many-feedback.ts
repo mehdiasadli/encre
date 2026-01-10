@@ -23,6 +23,7 @@ export async function getManyFeedback(
 
 	const where: Prisma.FeedbackWhereInput = {
 		userId,
+		status: { not: "deleted" },
 	};
 
 	if (input.statuses && input.statuses.length > 0) {
