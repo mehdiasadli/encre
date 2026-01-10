@@ -1,0 +1,15 @@
+{
+	"name": "@encre/constants",
+	"exports": {
+		".": "./src/index.ts",
+		"./*": "./src/*.ts"
+	},
+	"type": "module",
+	"private": true,
+	"devDependencies": {
+		"@encre/config": "workspace:*"
+	},
+	"peerDependencies": {
+		"typescript": "catalog:"
+	}
+}

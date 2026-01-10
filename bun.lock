@@ -116,6 +116,15 @@
       "name": "@encre/config",
       "version": "0.0.0",
     },
+    "packages/constants": {
+      "name": "@encre/constants",
+      "devDependencies": {
+        "@encre/config": "workspace:*",
+      },
+      "peerDependencies": {
+        "typescript": "catalog:",
+      },
+    },
     "packages/db": {
       "name": "@encre/db",
       "dependencies": {
@@ -335,6 +344,8 @@
     "@encre/auth": ["@encre/auth@workspace:packages/auth"],
 
     "@encre/config": ["@encre/config@workspace:packages/config"],
+
+    "@encre/constants": ["@encre/constants@workspace:packages/constants"],
 
     "@encre/db": ["@encre/db@workspace:packages/db"],
 
