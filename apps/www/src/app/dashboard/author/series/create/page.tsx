@@ -35,8 +35,8 @@ export default function CreateSeriesPage() {
 	});
 
 	const { mutate: createSerie, isPending: isSubmitting } = useORPCMutation({
-		...orpc.series.createSerie.mutationOptions(),
-		invalidateQueries: [orpc.series.authorGetSeriesList.queryKey()],
+		...orpc.serie.createSerie.mutationOptions(),
+		invalidateQueries: [orpc.serie.authorGetManySerie.queryKey()],
 		showErrorToast: false,
 		onError(error) {
 			if (error.data?.path?.includes("title")) {

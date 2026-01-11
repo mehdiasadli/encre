@@ -9,7 +9,7 @@ import {
 	UpdateFeedbackInputSchema,
 } from "@encre/schemas/modules/feedback.schema";
 import {
-	moderatorOrAdminProcedure,
+	moderatorProcedure,
 	protectedProcedure,
 	publicProcedure,
 } from "../../procedures";
@@ -28,7 +28,7 @@ export const feedbackRouter = {
 			async ({ input, context }) =>
 				await createFeedback(input, context.user?.id),
 		),
-	respondToFeedback: moderatorOrAdminProcedure
+	respondToFeedback: moderatorProcedure
 		.input(ResponseFeedbackInputSchema)
 		.handler(
 			async ({ input, context }) =>
@@ -41,14 +41,14 @@ export const feedbackRouter = {
 			async ({ input, context }) =>
 				await getManyFeedback(input, context.user.id),
 		),
-	adminGetManyFeedback: moderatorOrAdminProcedure
+	adminGetManyFeedback: moderatorProcedure
 		.input(AdminGetManyFeedbackInputSchema)
 		.output(AdminGetManyFeedbackOutputSchema)
 		.handler(async ({ input }) => await adminGetManyFeedback(input)),
-	updateFeedback: moderatorOrAdminProcedure
+	updateFeedback: moderatorProcedure
 		.input(UpdateFeedbackInputSchema)
 		.handler(async ({ input }) => await updateFeedback(input)),
-	deleteFeedback: moderatorOrAdminProcedure
+	deleteFeedback: moderatorProcedure
 		.input(DeleteFeedbackInputSchema)
 		.handler(async ({ input }) => await deleteFeedback(input)),
 };

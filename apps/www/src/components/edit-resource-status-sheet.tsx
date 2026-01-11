@@ -74,10 +74,10 @@ export function EditResourceStatusSheet({
 
 	const { mutate: updateSerie, isPending: isSerieSubmitting } = useORPCMutation(
 		{
-			...orpc.series.updateSerie.mutationOptions(),
+			...orpc.serie.updateSerie.mutationOptions(),
 			invalidateQueries: [
-				orpc.series.authorGetSerie.queryKey({ input: { slug } }),
-				orpc.series.authorGetSeriesList.queryKey(),
+				orpc.serie.authorGetOneSerie.queryKey({ input: { slug } }),
+				orpc.serie.authorGetManySerie.queryKey(),
 			],
 			onSuccess() {
 				toast.success("Status updated successfully");
@@ -104,10 +104,10 @@ export function EditResourceStatusSheet({
 
 	const { mutate: updateChapter, isPending: isChapterSubmitting } =
 		useORPCMutation({
-			...orpc.chapters.updateChapter.mutationOptions(),
+			...orpc.chapter.updateChapter.mutationOptions(),
 			invalidateQueries: [
-				orpc.chapters.authorGetChapter.queryKey({ input: { slug } }),
-				orpc.chapters.authorGetChaptersList.queryKey({
+				orpc.chapter.authorGetChapter.queryKey({ input: { slug } }),
+				orpc.chapter.authorGetChaptersList.queryKey({
 					input: { books: bookSlug ? [bookSlug] : undefined },
 				}),
 			],
