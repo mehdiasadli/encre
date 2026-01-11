@@ -11,12 +11,12 @@ import { seriesRouter } from "../modules/series/series.router";
 
 export const appRouter = {
 	author: authorRouter,
-	series: seriesRouter,
+	serie: seriesRouter,
 	books: booksRouter,
-	chapters: chaptersRouter,
-	resources: resourcesRouter,
+	chapter: chaptersRouter,
+	resource: resourcesRouter,
 	feedback: feedbackRouter,
-	characters: charactersRouter,
+	character: charactersRouter,
 };
 
 export type AppRouter = typeof appRouter;

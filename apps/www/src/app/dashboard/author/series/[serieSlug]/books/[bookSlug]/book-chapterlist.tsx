@@ -73,7 +73,7 @@ export function BookChapterlist({ book }: BookChapterlistProps) {
 		refetch,
 		isRefetching,
 	} = useQuery({
-		...orpc.chapters.authorGetChaptersList.queryOptions({
+		...orpc.chapter.authorGetChaptersList.queryOptions({
 			input: {
 				books: [book.slug],
 			},
@@ -107,7 +107,7 @@ export function BookChapterlist({ book }: BookChapterlistProps) {
 
 	// Swap mutation
 	const { mutate: swapChapters, isPending: isSwapping } = useORPCMutation({
-		...orpc.chapters.swapChapterOrder.mutationOptions(),
+		...orpc.chapter.swapChapterOrder.mutationOptions(),
 		onSuccess() {
 			toast.success("Chapters reordered successfully");
 			setPendingSwap(null);

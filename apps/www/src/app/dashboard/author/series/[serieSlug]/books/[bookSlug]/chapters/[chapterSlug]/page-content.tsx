@@ -7,7 +7,7 @@ import { ChapterHeader } from "./chapter-header";
 
 export function ChapterPageContent({ slug }: { slug: string }) {
 	const { content } = useContent({
-		...orpc.chapters.authorGetChapter.queryOptions({ input: { slug } }),
+		...orpc.chapter.authorGetChapter.queryOptions({ input: { slug } }),
 		enabled: !!slug,
 	});
 

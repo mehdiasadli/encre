@@ -57,10 +57,10 @@ export function EditResourceVisibilitySheet({
 	);
 
 	const { mutate: updateSerie, isPending: isSubmitting } = useORPCMutation({
-		...orpc.series.updateSerie.mutationOptions(),
+		...orpc.serie.updateSerie.mutationOptions(),
 		invalidateQueries: [
-			orpc.series.authorGetOneSerie.queryKey({ input: { slug } }),
-			orpc.series.authorGetManySerie.queryKey(),
+			orpc.serie.authorGetOneSerie.queryKey({ input: { slug } }),
+			orpc.serie.authorGetManySerie.queryKey(),
 		],
 		onSuccess() {
 			toast.success("Visibility updated successfully");
