@@ -1,3 +1,4 @@
+/** biome-ignore-all assist/source/organizeImports: no need to organize imports */
 import type { RouterClient } from "@orpc/server";
 
 import { authorRouter } from "../modules/author/author.router";
@@ -7,19 +8,8 @@ import { charactersRouter } from "../modules/characters/characters.router";
 import { feedbackRouter } from "../modules/feedback/feedback.router";
 import { resourcesRouter } from "../modules/resources/resources.router";
 import { seriesRouter } from "../modules/series/series.router";
-import { protectedProcedure, publicProcedure } from "../procedures";
 
 export const appRouter = {
-	healthCheck: publicProcedure.handler(() => {
-		return "OK";
-	}),
-	privateData: protectedProcedure.handler(({ context }) => {
-		return {
-			message: "This is private",
-			user: context.user,
-		};
-	}),
-
 	author: authorRouter,
 	series: seriesRouter,
 	books: booksRouter,
@@ -28,5 +18,6 @@ export const appRouter = {
 	feedback: feedbackRouter,
 	characters: charactersRouter,
 };
+
 export type AppRouter = typeof appRouter;
 export type AppRouterClient = RouterClient<typeof appRouter>;

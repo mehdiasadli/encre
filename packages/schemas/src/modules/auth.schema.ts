@@ -67,9 +67,7 @@ export const VerifyEmailInputSchema = z.object({
 
 export type VerifyEmailInputType = z.infer<typeof VerifyEmailInputSchema>;
 
-export const ResendVerificationEmailInputSchema = z.object({
-	email: z.email("Invalid email address"),
-});
+export const ResendVerificationEmailInputSchema = ForgetPasswordInputSchema;
 
 export type ResendVerificationEmailInputType = z.infer<
 	typeof ResendVerificationEmailInputSchema

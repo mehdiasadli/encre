@@ -57,7 +57,7 @@ export function DeleteResourceDialog({
 	const { mutate: deleteSerie, isPending: isSerieSubmitting } = useORPCMutation(
 		{
 			...orpc.series.deleteSerie.mutationOptions(),
-			invalidateQueries: [orpc.series.authorGetSeriesList.queryKey()],
+			invalidateQueries: [orpc.series.authorGetManySerie.queryKey()],
 			onSuccess() {
 				toast.success("Resource deleted successfully");
 				router.push("/dashboard/author");

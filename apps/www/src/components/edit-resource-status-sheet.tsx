@@ -76,8 +76,8 @@ export function EditResourceStatusSheet({
 		{
 			...orpc.series.updateSerie.mutationOptions(),
 			invalidateQueries: [
-				orpc.series.authorGetSerie.queryKey({ input: { slug } }),
-				orpc.series.authorGetSeriesList.queryKey(),
+				orpc.series.authorGetOneSerie.queryKey({ input: { slug } }),
+				orpc.series.authorGetManySerie.queryKey(),
 			],
 			onSuccess() {
 				toast.success("Status updated successfully");

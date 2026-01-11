@@ -1,16 +1,14 @@
-import prisma, { type Prisma } from "@encre/db";
+import prisma from "@encre/db";
 import type {
-	AdminGetSerieOutputType,
-	AuthorGetSerieOutputType,
-	GetSerieInputType,
-	GetSerieOutputType,
+	AuthorGetOneSerieInputType,
+	AuthorGetOneSerieOutputType,
 } from "@encre/schemas";
 import { ORPCError } from "@orpc/client";
 
-export async function authorGetSerie(
-	input: GetSerieInputType,
+export async function authorGetOneSerie(
+	input: AuthorGetOneSerieInputType,
 	authorId: string,
-): Promise<AuthorGetSerieOutputType> {
+): Promise<AuthorGetOneSerieOutputType> {
 	const serie = await prisma.serie.findFirst({
 		where: {
 			authorId,
@@ -27,85 +25,6 @@ export async function authorGetSerie(
 			_count: {
 				select: {
 					books: { where: { status: { not: "deleted" } } },
-					likes: true,
-				},
-			},
-		},
-	});
-
-	if (!serie) {
-		throw new ORPCError("NOT_FOUND", {
-			message: "Serie not found",
-		});
-	}
-
-	return serie;
-}
-
-export async function getSerie(
-	input: GetSerieInputType,
-	userId?: string,
-): Promise<GetSerieOutputType> {
-	const where: Prisma.SerieWhereInput = {
-		slug: input.slug,
-		status: "published",
-	};
-
-	where.visibility = !userId ? "public" : { in: ["public", "members"] };
-
-	const serie = await prisma.serie.findFirst({
-		where,
-		omit: {
-			authorId: true,
-			deletedAt: true,
-			deletionReason: true,
-			status: true,
-			id: true,
-		},
-		include: {
-			author: {
-				select: {
-					name: true,
-					slug: true,
-					image: true,
-				},
-			},
-			_count: {
-				select: {
-					books: { where: { status: "published" } },
-					likes: true,
-				},
-			},
-		},
-	});
-
-	if (!serie) {
-		throw new ORPCError("NOT_FOUND", {
-			message: "Serie not found",
-		});
-	}
-
-	return serie;
-}
-
-export async function adminGetSerie(
-	input: GetSerieInputType,
-): Promise<AdminGetSerieOutputType> {
-	const serie = await prisma.serie.findFirst({
-		where: {
-			slug: input.slug,
-		},
-		include: {
-			author: {
-				select: {
-					name: true,
-					slug: true,
-					image: true,
-				},
-			},
-			_count: {
-				select: {
-					books: { where: { status: "published" } },
 					likes: true,
 				},
 			},

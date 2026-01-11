@@ -1,71 +1,39 @@
 import {
-	AdminGetSerieOutputSchema,
-	AdminGetSeriesListInputSchema,
-	AdminGetSeriesListOutputSchema,
-	AuthorGetSerieOutputSchema,
-	AuthorGetSeriesListOutputSchema,
+	AuthorGetManySerieOutputSchema,
+	AuthorGetOneSerieInputSchema,
+	AuthorGetOneSerieOutputSchema,
 	CreateSerieInputSchema,
 	CreateSerieOutputSchema,
 	DeleteSerieInputSchema,
 	DeleteSerieOutputSchema,
-	GetSerieInputSchema,
-	GetSerieOutputSchema,
-	GetSeriesListOutputSchema,
 	ResourceStatusSchema,
 	UpdateSerieInputSchema,
 	UpdateSerieOutputSchema,
 } from "@encre/schemas";
+import { authorProcedure } from "../../procedures";
 import {
-	authorProcedure,
-	moderatorOrAdminProcedure,
-	publicProcedure,
-} from "../../procedures";
-import { createSerie } from "./services/create-serie";
-import { deleteSerie } from "./services/delete-serie";
-import {
-	adminGetSeriesList,
-	authorGetSeriesList,
-	getSeriesList,
-} from "./services/get-many-serie";
-import {
-	adminGetSerie,
-	authorGetSerie,
-	getSerie,
-} from "./services/get-one-serie";
-import { updateSerie } from "./services/update-serie";
+	authorGetManySerie,
+	authorGetOneSerie,
+	createSerie,
+	deleteSerie,
+	updateSerie,
+} from "./services";
 
 export const seriesRouter = {
 	// get one
-	getSerie: publicProcedure
-		.input(GetSerieInputSchema)
-		.output(GetSerieOutputSchema)
-		.handler(
-			async ({ input, context }) => await getSerie(input, context.user?.id),
-		),
-	authorGetSerie: authorProcedure
-		.input(GetSerieInputSchema)
-		.output(AuthorGetSerieOutputSchema)
+	authorGetOneSerie: authorProcedure
+		.input(AuthorGetOneSerieInputSchema)
+		.output(AuthorGetOneSerieOutputSchema)
 		.handler(
 			async ({ input, context }) =>
-				await authorGetSerie(input, context.author.id),
+				await authorGetOneSerie(input, context.author.id),
 		),
-	adminGetSerie: moderatorOrAdminProcedure
-		.input(GetSerieInputSchema)
-		.output(AdminGetSerieOutputSchema)
-		.handler(async ({ input }) => await adminGetSerie(input)),
 	// get many
-	getSeriesList: publicProcedure
-		.output(GetSeriesListOutputSchema)
-		.handler(async ({ context }) => await getSeriesList(context.user?.id)),
-	authorGetSeriesList: authorProcedure
-		.output(AuthorGetSeriesListOutputSchema)
+	authorGetManySerie: authorProcedure
+		.output(AuthorGetManySerieOutputSchema)
 		.handler(
-			async ({ context }) => await authorGetSeriesList(context.author.id),
+			async ({ context }) => await authorGetManySerie(context.author.id),
 		),
-	adminGetSeriesList: moderatorOrAdminProcedure
-		.input(AdminGetSeriesListInputSchema)
-		.output(AdminGetSeriesListOutputSchema)
-		.handler(async ({ input }) => await adminGetSeriesList(input)),
 	// create
 	createSerie: authorProcedure
 		.input(CreateSerieInputSchema)
