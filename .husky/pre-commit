@@ -1,1 +1,2 @@
+bun run check-types
 bun x lint-staged
