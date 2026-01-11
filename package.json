@@ -35,8 +35,7 @@
 		"prepare": "husky",
 		"create-package": "bun run scripts/create-package.ts",
 		"postcreate-package": "bun install",
-		"git:commit": "git add . && bun run check && git commit -m",
-		"postinstall": "turbo -F @encre/db db:generate"
+		"git:commit": "git add . && bun run check && git commit -m"
 	},
 	"dependencies": {
 		"@encre/env": "workspace:*",
