@@ -1,6 +1,6 @@
 "use client";
 
-import { BecomeAuthorInputSchema } from "@encre/schemas";
+import { CreateAuthorInputSchema } from "@encre/schemas";
 import { slugify } from "@encre/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -38,7 +38,7 @@ export function BecomeAuthorForm({ username, name }: BecomeAuthorFormProps) {
 	const router = useRouter();
 
 	const form = useForm({
-		resolver: zodResolver(BecomeAuthorInputSchema),
+		resolver: zodResolver(CreateAuthorInputSchema),
 		defaultValues: {
 			slug: username,
 			name: name,
@@ -48,8 +48,8 @@ export function BecomeAuthorForm({ username, name }: BecomeAuthorFormProps) {
 		mode: "onBlur",
 	});
 
-	const { mutate: becomeAuthor, isPending: isSubmitting } = useMutation(
-		orpc.author.becomeAuthor.mutationOptions({
+	const { mutate: createAuthor, isPending: isSubmitting } = useMutation(
+		orpc.author.createAuthor.mutationOptions({
 			onSuccess() {
 				toast.success(
 					"Author profile created successfully. You can now start writing.",
@@ -63,7 +63,7 @@ export function BecomeAuthorForm({ username, name }: BecomeAuthorFormProps) {
 	);
 
 	const onSubmit = form.handleSubmit((values) => {
-		becomeAuthor(values);
+		createAuthor(values);
 	});
 
 	return (
