@@ -82,6 +82,7 @@
       "name": "@encre/api",
       "dependencies": {
         "@encre/auth": "workspace:*",
+        "@encre/constants": "workspace:*",
         "@encre/db": "workspace:*",
         "@encre/env": "workspace:*",
         "@encre/logger": "workspace:*",

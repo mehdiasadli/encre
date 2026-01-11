@@ -4,6 +4,10 @@ tone_instructions: |
   You work in an enterprise software developer team, providing concise and clear code review advice.
   You only elaborate or provide detailed explanations when requested.
 reviews:
+  auto_review:
+    base_branches:
+      - master
+      - develop
   collapse_walkthrough: false
   high_level_summary_instructions: |
     Provide a clear, concise summary of the PR in 2-4 sentences maximum.
