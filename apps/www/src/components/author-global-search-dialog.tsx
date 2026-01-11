@@ -44,7 +44,7 @@ export function AuthorGlobalSearchDialog() {
 	});
 
 	const { data, isLoading, error } = useQuery({
-		...orpc.resources.authorSearchResource.queryOptions({
+		...orpc.resource.authorSearchResource.queryOptions({
 			enabled: open,
 			input: {
 				query: debouncedSearch || "",

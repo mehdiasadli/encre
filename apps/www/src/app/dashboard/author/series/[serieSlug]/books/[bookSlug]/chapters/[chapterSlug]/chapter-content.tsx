@@ -27,7 +27,7 @@ export function ChapterContent({ chapter }: ChapterContentProps) {
 		bookSlug: string;
 	}>();
 	const { content } = useContent({
-		...orpc.chapters.authorGetChapterContent.queryOptions({
+		...orpc.chapter.authorGetChapterContent.queryOptions({
 			input: { slug: chapter.slug },
 		}),
 		enabled: !!chapter.slug,

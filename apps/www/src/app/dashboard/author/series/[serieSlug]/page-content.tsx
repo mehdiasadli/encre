@@ -21,7 +21,7 @@ export function SeriePageContent({ slug }: { slug: string }) {
 		refetch,
 		isRefetching,
 	} = useQuery(
-		orpc.series.authorGetSerie.queryOptions({
+		orpc.serie.authorGetOneSerie.queryOptions({
 			input: { slug },
 		}),
 	);

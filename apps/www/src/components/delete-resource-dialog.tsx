@@ -56,8 +56,8 @@ export function DeleteResourceDialog({
 
 	const { mutate: deleteSerie, isPending: isSerieSubmitting } = useORPCMutation(
 		{
-			...orpc.series.deleteSerie.mutationOptions(),
-			invalidateQueries: [orpc.series.authorGetSeriesList.queryKey()],
+			...orpc.serie.deleteSerie.mutationOptions(),
+			invalidateQueries: [orpc.serie.authorGetManySerie.queryKey()],
 			onSuccess() {
 				toast.success("Resource deleted successfully");
 				router.push("/dashboard/author");
@@ -84,9 +84,9 @@ export function DeleteResourceDialog({
 
 	const { mutate: deleteChapter, isPending: isChapterSubmitting } =
 		useORPCMutation({
-			...orpc.chapters.deleteChapter.mutationOptions(),
+			...orpc.chapter.deleteChapter.mutationOptions(),
 			invalidateQueries: [
-				orpc.chapters.authorGetChaptersList.queryKey({
+				orpc.chapter.authorGetChaptersList.queryKey({
 					input: { books: bookSlug ? [bookSlug] : undefined },
 				}),
 			],

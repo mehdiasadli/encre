@@ -40,7 +40,7 @@ export function EditSerieSheet({ render, slug }: EditSerieSheetProps) {
 	const pathname = usePathname();
 
 	const { content, data: serie } = useContent({
-		...orpc.series.authorGetSerie.queryOptions({ input: { slug } }),
+		...orpc.serie.authorGetOneSerie.queryOptions({ input: { slug } }),
 		enabled: isOpen === slug,
 	});
 
@@ -63,8 +63,8 @@ export function EditSerieSheet({ render, slug }: EditSerieSheetProps) {
 	const formInitialized = useInitializeForm(form, serie);
 
 	const { mutate: updateSerie, isPending: isSubmitting } = useORPCMutation({
-		...orpc.series.updateSerie.mutationOptions(),
-		invalidateQueries: [orpc.series.authorGetSeriesList.queryKey()],
+		...orpc.serie.updateSerie.mutationOptions(),
+		invalidateQueries: [orpc.serie.authorGetManySerie.queryKey()],
 		showErrorToast: false,
 		onError(error) {
 			if (error.data?.path?.includes("title")) {

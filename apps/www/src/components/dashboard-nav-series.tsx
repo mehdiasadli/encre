@@ -27,7 +27,7 @@ export function DashboardNavSeries() {
 		error,
 		refetch,
 	} = useQuery(
-		orpc.series.authorGetSeriesList.queryOptions({
+		orpc.serie.authorGetManySerie.queryOptions({
 			enabled: !!session,
 		}),
 	);

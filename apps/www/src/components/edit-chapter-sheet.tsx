@@ -45,7 +45,7 @@ export function EditChapterSheet({
 	const pathname = usePathname();
 
 	const { content, data: chapter } = useContent({
-		...orpc.chapters.authorGetChapter.queryOptions({ input: { slug } }),
+		...orpc.chapter.authorGetChapter.queryOptions({ input: { slug } }),
 		enabled: isOpen === slug,
 	});
 
@@ -67,10 +67,10 @@ export function EditChapterSheet({
 	const formInitialized = useInitializeForm(form, chapter);
 
 	const { mutate: updateChapter, isPending: isSubmitting } = useORPCMutation({
-		...orpc.chapters.updateChapter.mutationOptions(),
+		...orpc.chapter.updateChapter.mutationOptions(),
 		invalidateQueries: [
-			orpc.chapters.authorGetChapter.queryKey({ input: { slug } }),
-			orpc.chapters.authorGetChaptersList.queryKey({
+			orpc.chapter.authorGetChapter.queryKey({ input: { slug } }),
+			orpc.chapter.authorGetChaptersList.queryKey({
 				input: { books: [bookSlug] },
 			}),
 		],

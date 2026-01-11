@@ -1,22 +1,19 @@
 import {
-	BecomeAuthorInputSchema,
-	BecomeAuthorOutputSchema,
+	CreateAuthorInputSchema,
+	CreateAuthorOutputSchema,
 	GetMyAuthorOutputSchema,
 } from "@encre/schemas";
 import { protectedProcedure } from "../../procedures";
-import { AuthorService } from "./author.service";
+import { createAuthor, getMyAuthor } from "./services";
 
 export const authorRouter = {
 	getMyAuthor: protectedProcedure
 		.output(GetMyAuthorOutputSchema)
+		.handler(async ({ context }) => getMyAuthor(context.user.id)),
+	createAuthor: protectedProcedure
+		.input(CreateAuthorInputSchema)
+		.output(CreateAuthorOutputSchema)
 		.handler(
-			async ({ context }) => await AuthorService.getMyAuthor(context.user.id),
-		),
-	becomeAuthor: protectedProcedure
-		.input(BecomeAuthorInputSchema)
-		.output(BecomeAuthorOutputSchema)
-		.handler(
-			async ({ input, context }) =>
-				await AuthorService.becomeAuthor(context.user.id, input),
+			async ({ input, context }) => await createAuthor(input, context.user.id),
 		),
 };

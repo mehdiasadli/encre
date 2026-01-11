@@ -39,9 +39,9 @@ export default function CreateChapterPage() {
 	});
 
 	const { mutate: createChapter, isPending: isSubmitting } = useORPCMutation({
-		...orpc.chapters.createChapter.mutationOptions(),
+		...orpc.chapter.createChapter.mutationOptions(),
 		invalidateQueries: [
-			orpc.chapters.authorGetChaptersList.queryKey({
+			orpc.chapter.authorGetChaptersList.queryKey({
 				input: {
 					books: [bookSlug],
 				},

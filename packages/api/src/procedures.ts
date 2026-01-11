@@ -87,15 +87,10 @@ export const protectedProcedure = publicProcedure.use(requireAuth);
 /// AUTHOR PROCEDURE
 export const authorProcedure = protectedProcedure.use(requireAuthor);
 
-/// MODERATOR PROCEDURE
+/// MODERATOR PROCEDURE (ALSO ADMIN)
 export const moderatorProcedure = protectedProcedure.use(
-	requireRoles(["moderator"]),
+	requireRoles(["moderator", "admin"]),
 );
 
 /// ADMIN PROCEDURE
 export const adminProcedure = protectedProcedure.use(requireRoles(["admin"]));
-
-/// MODERATOR OR ADMIN PROCEDURE
-export const moderatorOrAdminProcedure = protectedProcedure.use(
-	requireRoles(["moderator", "admin"]),
-);
