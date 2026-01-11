@@ -15,8 +15,15 @@ import {
 	UpdateChapterOutputSchema,
 } from "@encre/schemas";
 import { authorProcedure } from "../../procedures";
-import { ChaptersService } from "./chapters.service";
-import { ChaptersContentService } from "./chapters-content.service";
+import {
+	authorGetManyChapters,
+	authorGetOneChapter,
+	authorGetOneChapterContent,
+	createChapter,
+	deleteChapter,
+	swapChapterOrder,
+	updateChapter,
+} from "./services";
 
 export const chaptersRouter = {
 	createChapter: authorProcedure
@@ -24,42 +31,42 @@ export const chaptersRouter = {
 		.output(CreateChapterOutputSchema)
 		.handler(
 			async ({ input, context }) =>
-				await ChaptersService.createChapter(input, context.author.id),
+				await createChapter(input, context.author.id),
 		),
 	deleteChapter: authorProcedure
 		.input(DeleteChapterInputSchema)
 		.output(DeleteChapterOutputSchema)
 		.handler(
 			async ({ input, context }) =>
-				await ChaptersService.deleteChapter(input, context.author.id),
+				await deleteChapter(input, context.author.id),
 		),
 	updateChapter: authorProcedure
 		.input(UpdateChapterInputSchema)
 		.output(UpdateChapterOutputSchema)
 		.handler(
 			async ({ input, context }) =>
-				await ChaptersService.updateChapter(input, context.author.id),
+				await updateChapter(input, context.author.id),
 		),
 	swapChapterOrder: authorProcedure
 		.input(SwapChapterOrderInputSchema)
 		.output(SwapChapterOrderOutputSchema)
 		.handler(
 			async ({ input, context }) =>
-				await ChaptersService.swapChapterOrder(input, context.author.id),
+				await swapChapterOrder(input, context.author.id),
 		),
 	authorGetChaptersList: authorProcedure
 		.input(AuthorGetChaptersListInputSchema)
 		.output(AuthorGetChaptersListOutputSchema)
 		.handler(
 			async ({ input, context }) =>
-				await ChaptersService.authorGetChaptersList(input, context.author.id),
+				await authorGetManyChapters(input, context.author.id),
 		),
 	authorGetChapter: authorProcedure
 		.input(AuthorGetChapterInputSchema)
 		.output(AuthorGetChapterOutputSchema)
 		.handler(
 			async ({ input, context }) =>
-				await ChaptersService.authorGetChapter(input, context.author.id),
+				await authorGetOneChapter(input, context.author.id),
 		),
 
 	// CONTENT
@@ -68,9 +75,6 @@ export const chaptersRouter = {
 		.output(AuthorGetChapterContentOutputSchema)
 		.handler(
 			async ({ input, context }) =>
-				await ChaptersContentService.authorGetChapterContent(
-					input,
-					context.author.id,
-				),
+				await authorGetOneChapterContent(input, context.author.id),
 		),
 };
