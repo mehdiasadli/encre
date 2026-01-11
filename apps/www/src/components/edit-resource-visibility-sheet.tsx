@@ -104,7 +104,7 @@ export function EditResourceVisibilitySheet({
 
 	return (
 		<Sheet open={isOpen === slug} onOpenChange={onOpenChange}>
-			{render && <SheetTrigger render={render} />}
+			{render && <SheetTrigger nativeButton={false} render={render} />}
 			<SheetPopup render={<form onSubmit={onSubmit} />} showCloseButton={false}>
 				<SheetHeader>
 					<SheetTitle>Edit Visibility</SheetTitle>
