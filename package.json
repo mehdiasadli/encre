@@ -34,8 +34,7 @@
 		"check": "biome check --write .",
 		"prepare": "husky",
 		"create-package": "bun run scripts/create-package.ts",
-		"postcreate-package": "bun install",
-		"git:commit": "git add . && bun run check && git commit -m"
+		"postcreate-package": "bun install"
 	},
 	"dependencies": {
 		"@encre/env": "workspace:*",
